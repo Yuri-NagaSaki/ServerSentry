@@ -15,7 +15,7 @@ export const ServerName: React.FC<{ name: string }> = ({ name }) => (
   <motion.div 
     whileHover={{ x: 2 }} 
     transition={{ duration: 0.2 }}
-    className="flex items-center gap-1.5"
+    className="flex items-center gap-1.5 min-w-0 max-w-full"
   >
     <span className="text-xl truncate flex-shrink" suppressHydrationWarning>
       {name}
@@ -24,34 +24,32 @@ export const ServerName: React.FC<{ name: string }> = ({ name }) => (
 );
 
 export const UptimeDisplay: React.FC<{ uptime: string }> = ({ uptime }) => (
-  <motion.div 
-    className="flex items-center space-x-1 flex-shrink-0"
-    whileHover={{ color: "var(--primary)" }}
-    transition={{ duration: 0.2 }}
-  >
+  <div className="flex items-center space-x-1 flex-shrink-0 whitespace-nowrap">
     <Clock className="h-3.5 w-3.5" />
     <span className="whitespace-nowrap" suppressHydrationWarning>运行: {uptime}</span>
-  </motion.div>
+  </div>
 );
 
 export const ServerTag: React.FC<{ label: string }> = ({ label }) => (
-  <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+  <div className="flex-shrink-0">
     <Badge 
       variant="outline" 
-      className="h-5 px-1.5 text-[10px] font-normal bg-background/50 dark:bg-background/30" 
+      className="h-5 px-1 text-[10px] font-normal bg-background/50 dark:bg-background/30 whitespace-nowrap" 
       suppressHydrationWarning
     >
       {label}
     </Badge>
-  </motion.div>
+  </div>
 );
 
 export const ServerInfo: React.FC<ServerInfoProps> = ({ uptime, type, location }) => (
   <>
-    <div className="flex items-center justify-between text-muted-foreground text-xs">
-      <UptimeDisplay uptime={uptime} />
+    <div className="flex items-center justify-between">
+      <div className="text-muted-foreground text-xs">
+        <UptimeDisplay uptime={uptime} />
+      </div>
       {(type || location) && (
-        <div className="flex items-center gap-1.5 flex-shrink-0">
+        <div className="flex items-center gap-0.5 flex-shrink-0 overflow-x-auto whitespace-nowrap scrollbar-none">
           {type && <ServerTag label={type} />}
           {location && <ServerTag label={location} />}
         </div>

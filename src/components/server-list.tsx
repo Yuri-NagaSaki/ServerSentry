@@ -41,7 +41,9 @@ export const ServerList: React.FC = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
       {sortedServers.map((server) => (
-        <ServerCard key={server.name} server={server} />
+        <div key={server.name} className="h-full">
+          <ServerCard server={server} />
+        </div>
       ))}
     </div>
   );

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { serverColors } from './colors';
 
 interface IPStatusBadgesProps {
@@ -14,7 +13,7 @@ export const IPStatusBadges: React.FC<IPStatusBadgesProps> = ({
   ipv6Online 
 }) => {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex flex-shrink-0 items-center gap-0.5">
       <IPBadge protocol="v4" isOnline={ipv4Online} />
       <IPBadge protocol="v6" isOnline={ipv6Online} />
     </div>
@@ -47,19 +46,16 @@ const IPBadge: React.FC<IPBadgeProps> = ({ protocol, isOnline }) => {
   const styles = getStyles();
   
   return (
-    <motion.div 
-      whileHover={{ scale: 1.05 }} 
-      transition={{ type: "spring", stiffness: 500 }}
-    >
+    <div className="flex-shrink-0">
       <div 
-        className={`flex items-center h-5 px-1.5 rounded-full text-[10px] font-medium ${styles.bg} ${styles.text}`}
+        className={`flex items-center h-5 px-1 rounded-full text-[10px] font-medium ${styles.bg} ${styles.text} whitespace-nowrap`}
       >
         <div 
-          className="h-[6px] w-[6px] rounded-full mr-1 animate-pulse" 
+          className="h-[6px] w-[6px] rounded-full mr-0.5 animate-pulse" 
           style={{ backgroundColor: styles.indicatorColor }}
         />
         <span suppressHydrationWarning>IP{protocol}</span>
       </div>
-    </motion.div>
+    </div>
   );
 }; 
