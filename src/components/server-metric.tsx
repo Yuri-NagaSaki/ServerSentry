@@ -27,6 +27,11 @@ const colors = {
     gradient: 'from-rose-400 via-rose-500 to-red-500',
     glow: 'shadow-rose-500/30',
     text: 'text-rose-400 dark:text-[var(--color-red)]'
+  },
+  disabled: {
+    gradient: 'from-slate-400 via-slate-500 to-slate-600',
+    glow: 'shadow-slate-500/30',
+    text: 'text-slate-400 dark:text-slate-500'
   }
 };
 
@@ -41,9 +46,14 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
   const formattedValue = formatter(value);
   const formattedTotal = formatter(total);
   
+  // 检查未配置状态（例如SWAP为0）
+  const isUnconfigured = formattedValue === "未配置";
+  
   // 根据百分比确定颜色主题
   const getColorTheme = (percent: number) => {
-    if (percent >= 90) {
+    if (isUnconfigured) {
+      return colors.disabled;
+    } else if (percent >= 90) {
       return colors.danger;
     } else if (percent >= 70) {
       return colors.warning;
@@ -59,28 +69,30 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium">{label}</span>
-          <motion.span 
-            className={`text-xs font-semibold ${colorTheme.text}`}
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ 
-              duration: 2, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-            suppressHydrationWarning
-          >
-            {percent}%
-          </motion.span>
+          {!isUnconfigured && (
+            <motion.span 
+              className={`text-xs font-semibold ${colorTheme.text}`}
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              suppressHydrationWarning
+            >
+              {percent}%
+            </motion.span>
+          )}
         </div>
         <span className="text-sm text-muted-foreground" suppressHydrationWarning>
-          {formattedValue}{unit} / {formattedTotal}{unit}
+          {isUnconfigured ? "未配置" : `${formattedValue}${unit} / ${formattedTotal}${unit}`}
         </span>
       </div>
       <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary/40 backdrop-blur-sm dark:bg-secondary/30">
         <motion.div 
           className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} ${colorTheme.glow} rounded-full`}
           initial={{ width: 0 }}
-          animate={{ width: `${percent}%` }}
+          animate={{ width: isUnconfigured ? "0%" : `${percent}%` }}
           transition={{ 
             duration: 0.8, 
             ease: [0.34, 1.56, 0.64, 1] 

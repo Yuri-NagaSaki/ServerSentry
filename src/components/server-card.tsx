@@ -5,15 +5,16 @@ import { Server, formatBytes } from '@/lib/api';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { ServerMetric } from './server-metric';
 import { motion } from 'framer-motion';
+import { Clock, MapPin, Server as ServerIcon } from 'lucide-react';
 
 // 导入拆分后的组件
 import {
   serverAnimations,
   StatusIndicator,
   StatusBadge,
-  ServerInfo,
   RealTimeNetworkPanel,
-  TotalTrafficPanel
+  TotalTrafficPanel,
+  IPStatusBadges
 } from './server';
 
 interface ServerCardProps {
@@ -22,6 +23,15 @@ interface ServerCardProps {
 
 export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
   const isOnline = server.online4 || server.online6;
+  
+  // SWAP特殊处理
+  const hasSwap = server.swap_total > 0;
+  const swapFormatter = (val: number) => {
+    if (!hasSwap) {
+      return val === 0 ? "未配置" : formatBytes(val * 1024);
+    }
+    return formatBytes(val * 1024);
+  };
   
   return (
     <motion.div {...serverAnimations.fadeIn}>
@@ -37,8 +47,9 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
         
         {/* 卡片内部容器 */}
         <motion.div className="relative z-10" {...serverAnimations.hover}>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between mb-1">
+          <CardHeader className="pb-2 space-y-2">
+            {/* 服务器名称和状态 */}
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <StatusIndicator isOnline={isOnline} />
                 <span className="text-xl truncate flex-shrink" suppressHydrationWarning>
@@ -48,11 +59,25 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
               <StatusBadge isOnline={isOnline} />
             </div>
             
-            <ServerInfo 
-              uptime={server.uptime}
-              type={server.type}
-              location={server.location}
-            />
+            {/* 服务器信息和网络类型 */}
+            <div className="flex items-center justify-between">
+              <div className="flex-shrink-0">
+                <UptimeDisplay uptime={server.uptime} />
+              </div>
+              <div className="flex items-center gap-2">
+                {/* IP状态标签，放在最前面 */}
+                <IPStatusBadges 
+                  ipv4Online={server.online4}
+                  ipv6Online={server.online6}
+                />
+                
+                {/* 服务器类型标签 */}
+                {server.type && <ServerTypeTag label={server.type} />}
+                
+                {/* 位置标签 */}
+                {server.location && <LocationTag label={server.location} />}
+              </div>
+            </div>
           </CardHeader>
           
           <CardContent className="space-y-4 pt-0">
@@ -83,9 +108,18 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
                   formatter={(val) => formatBytes(val * 1024 * 1024)}
                 />
               </motion.div>
+              
+              <motion.div whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
+                <ServerMetric 
+                  label="SWAP"
+                  value={server.swap_used}
+                  total={server.swap_total || 1}
+                  formatter={swapFormatter}
+                />
+              </motion.div>
             </div>
             
-            <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
               <RealTimeNetworkPanel
                 downloadSpeed={server.network_rx}
                 uploadSpeed={server.network_tx}
@@ -101,4 +135,36 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
       </Card>
     </motion.div>
   );
-}; 
+};
+
+// 运行时间显示组件
+const UptimeDisplay: React.FC<{ uptime: string }> = ({ uptime }) => (
+  <motion.div 
+    className="flex items-center space-x-1 flex-shrink-0 text-muted-foreground text-xs"
+    whileHover={{ color: "var(--primary)" }}
+    transition={{ duration: 0.2 }}
+  >
+    <Clock className="h-3.5 w-3.5" />
+    <span className="whitespace-nowrap" suppressHydrationWarning>运行: {uptime}</span>
+  </motion.div>
+);
+
+// 服务器类型标签
+const ServerTypeTag: React.FC<{ label: string }> = ({ label }) => (
+  <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+    <div className="flex items-center h-5 px-1.5 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80">
+      <ServerIcon className="h-3 w-3 mr-1 text-muted-foreground" />
+      <span suppressHydrationWarning>{label}</span>
+    </div>
+  </motion.div>
+);
+
+// 位置标签
+const LocationTag: React.FC<{ label: string }> = ({ label }) => (
+  <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
+    <div className="flex items-center h-5 px-1.5 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80">
+      <MapPin className="h-3 w-3 mr-1 text-muted-foreground" />
+      <span suppressHydrationWarning>{label}</span>
+    </div>
+  </motion.div>
+); 
