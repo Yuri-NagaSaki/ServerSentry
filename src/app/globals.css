@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import '../styles/fonts.css';
+@import '../styles/background.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

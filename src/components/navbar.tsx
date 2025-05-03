@@ -5,6 +5,7 @@ import { config } from '@/lib/config';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import Image from 'next/image';
+import { ThemeToggleButton } from './ui/theme-selector';
 
 export const Navbar: React.FC = () => {
   const { theme, mounted, toggleTheme } = useTheme();
@@ -41,7 +42,7 @@ export const Navbar: React.FC = () => {
           
           <div className="flex items-center space-x-2">
             <a
-              href="https://github.com/zdz/ServerStatus-Rust"
+              href="https://github.com/Yuri-NagaSaki/ServerSentry"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors hover:bg-accent hover:text-accent-foreground"
@@ -59,6 +60,8 @@ export const Navbar: React.FC = () => {
             <div suppressHydrationWarning>
               {themeToggle}
             </div>
+            
+            <ThemeToggleButton />
           </div>
         </div>
       </div>

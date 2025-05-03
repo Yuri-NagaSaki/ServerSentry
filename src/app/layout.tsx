@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { config } from "@/lib/config";
 import { Providers } from "./providers";
+import "../styles/background.css"; // 直接导入背景样式
 
 export const metadata: Metadata = {
   title: config.siteTitle,
