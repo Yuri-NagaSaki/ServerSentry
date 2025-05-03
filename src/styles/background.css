@@ -1,7 +1,7 @@
 /**
  * 自定义背景样式
  * 使用CSS变量实现高度可定制性
- * 采用GPU加速提高性能
+ * 采用性能优化方案
  */
 
 :root {
@@ -25,7 +25,7 @@
   --bg-blur-amount: 100px;
 }
 
-/* 主渐变背景 - 使用GPU加速 */
+/* 主渐变背景 */
 .gradient-background {
   position: absolute;
   top: 0;
@@ -45,8 +45,6 @@
       var(--bg-gradient-2-light) 0%,
       transparent 25%
     );
-  transform: translateZ(0); /* 启用GPU加速 */
-  will-change: opacity; /* 优化性能 */
   transition: background-image 0.5s ease-in-out;
 }
 
@@ -78,8 +76,6 @@
     linear-gradient(to right, var(--bg-grid-color-light) 1px, transparent 1px),
     linear-gradient(to bottom, var(--bg-grid-color-light) 1px, transparent 1px);
   background-size: 24px 24px;
-  transform: translateZ(0); /* 启用GPU加速 */
-  will-change: opacity; /* 优化性能 */
 }
 
 .dark .grid-overlay {
@@ -96,8 +92,6 @@
   opacity: var(--bg-spot-opacity);
   filter: blur(var(--bg-blur-amount));
   pointer-events: none;
-  transform: translateZ(0); /* 启用GPU加速 */
-  will-change: transform, opacity; /* 优化性能 */
 }
 
 .top-left {
@@ -106,7 +100,7 @@
   width: 40%;
   height: 40%;
   background: radial-gradient(circle, var(--bg-spot-1-light) 0%, transparent 70%);
-  animation: float 20s ease-in-out infinite;
+  animation: float 30s ease-in-out infinite;
 }
 
 .bottom-right {
@@ -115,7 +109,7 @@
   width: 40%;
   height: 40%;
   background: radial-gradient(circle, var(--bg-spot-2-light) 0%, transparent 70%);
-  animation: float 25s ease-in-out infinite reverse;
+  animation: float 35s ease-in-out infinite reverse;
 }
 
 .dark-top-right {
@@ -124,7 +118,7 @@
   width: 40%;
   height: 40%;
   background: radial-gradient(circle, var(--bg-spot-1-dark) 0%, transparent 70%);
-  animation: float 20s ease-in-out infinite;
+  animation: float 30s ease-in-out infinite;
 }
 
 .dark-bottom-left {
@@ -133,19 +127,19 @@
   width: 40%;
   height: 40%;
   background: radial-gradient(circle, var(--bg-spot-2-dark) 0%, transparent 70%);
-  animation: float 25s ease-in-out infinite reverse;
+  animation: float 35s ease-in-out infinite reverse;
 }
 
-/* 轻微浮动动画 - 性能优化版本 */
+/* 轻微浮动动画 - 降低动画频率版本 */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0) translateX(0) translateZ(0);
+    transform: translate(0, 0);
   }
   33% {
-    transform: translateY(-10px) translateX(10px) translateZ(0);
+    transform: translate(8px, -8px);
   }
   66% {
-    transform: translateY(5px) translateX(-5px) translateZ(0);
+    transform: translate(-4px, 4px);
   }
 }
 
@@ -166,7 +160,7 @@
   display: block;
 }
 
-/* 确保内容层被正确分层 - 增强性能 */
+/* 确保内容层被正确分层 */
 body > :not(.fixed) {
   isolation: isolate;
   position: relative;
