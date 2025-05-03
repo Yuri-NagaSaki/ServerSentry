@@ -10,6 +10,10 @@
 !.yarn/releases
 !.yarn/versions
 
+# cursor
+.cursor
+.cursorrules
+
 # testing
 /coverage
 
@@ -75,3 +79,5 @@ Thumbs.db
 .netlify
 
 .react-email
+
+.stats.json
