@@ -55,7 +55,7 @@ export function ThemeToggleButton() {
   // 循环切换主题
   const toggleTheme = () => {
     const allThemes: BackgroundPresetKey[] = ['default', ...presets];
-    const currentIndex = allThemes.indexOf(currentTheme as any);
+    const currentIndex = allThemes.indexOf(currentTheme as BackgroundPresetKey);
     const nextIndex = (currentIndex + 1) % allThemes.length;
     applyTheme(allThemes[nextIndex]);
   };

@@ -6,7 +6,7 @@ import React from 'react';
  */
 export function GradientBackground() {
   return (
-    <div aria-hidden="true" className="fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden="true" className="fixed top-0 right-0 bottom-0 left-0 -z-10 overflow-hidden">
       {/* 主渐变背景 */}
       <div className="gradient-background"></div>
       

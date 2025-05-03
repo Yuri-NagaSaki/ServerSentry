@@ -27,7 +27,13 @@
 
 /* 主渐变背景 - 使用GPU加速 */
 .gradient-background {
-  @apply absolute inset-0 h-full w-full;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: 
     radial-gradient(
       circle at 15% 50%,
@@ -60,7 +66,13 @@
 
 /* 网格纹理覆盖 */
 .grid-overlay {
-  @apply absolute inset-0 h-full w-full;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   opacity: var(--bg-grid-opacity);
   background-image: 
     linear-gradient(to right, var(--bg-grid-color-light) 1px, transparent 1px),
@@ -79,7 +91,8 @@
 
 /* 模糊渐变光点 */
 .blur-gradient-spot {
-  @apply absolute rounded-full;
+  position: absolute;
+  border-radius: 9999px;
   opacity: var(--bg-spot-opacity);
   filter: blur(var(--bg-blur-amount));
   pointer-events: none;
@@ -88,25 +101,37 @@
 }
 
 .top-left {
-  @apply left-[-5%] top-[-5%] h-[40%] w-[40%];
+  left: -5%;
+  top: -5%;
+  width: 40%;
+  height: 40%;
   background: radial-gradient(circle, var(--bg-spot-1-light) 0%, transparent 70%);
   animation: float 20s ease-in-out infinite;
 }
 
 .bottom-right {
-  @apply bottom-[-5%] right-[-5%] h-[40%] w-[40%];
+  bottom: -5%;
+  right: -5%;
+  width: 40%;
+  height: 40%;
   background: radial-gradient(circle, var(--bg-spot-2-light) 0%, transparent 70%);
   animation: float 25s ease-in-out infinite reverse;
 }
 
 .dark-top-right {
-  @apply right-[-5%] top-[-5%] h-[40%] w-[40%];
+  right: -5%;
+  top: -5%;
+  width: 40%;
+  height: 40%;
   background: radial-gradient(circle, var(--bg-spot-1-dark) 0%, transparent 70%);
   animation: float 20s ease-in-out infinite;
 }
 
 .dark-bottom-left {
-  @apply bottom-[-5%] left-[-5%] h-[40%] w-[40%];
+  bottom: -5%;
+  left: -5%;
+  width: 40%;
+  height: 40%;
   background: radial-gradient(circle, var(--bg-spot-2-dark) 0%, transparent 70%);
   animation: float 25s ease-in-out infinite reverse;
 }
@@ -126,19 +151,19 @@
 
 /* 隐藏/显示基于主题的元素 */
 .light-mode-only {
-  @apply block;
+  display: block;
 }
 
 .dark-mode-only {
-  @apply hidden;
+  display: none;
 }
 
 .dark .light-mode-only {
-  @apply hidden;
+  display: none;
 }
 
 .dark .dark-mode-only {
-  @apply block;
+  display: block;
 }
 
 /* 确保内容层被正确分层 - 增强性能 */
