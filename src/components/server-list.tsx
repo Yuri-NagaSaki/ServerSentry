@@ -30,7 +30,13 @@ export const ServerList: React.FC = () => {
   
   if (!data?.servers) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+      <div 
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6"
+        style={{
+          contain: 'layout style',
+          contentVisibility: 'auto'
+        }}
+      >
         {Array(8).fill(null).map((_, i) => (
           <div key={i} className="h-[300px] bg-muted/10 rounded-lg" />
         ))}
@@ -39,7 +45,13 @@ export const ServerList: React.FC = () => {
   }
   
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+    <div 
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6"
+      style={{
+        contain: 'layout style',
+        contentVisibility: 'auto'
+      }}
+    >
       {sortedServers.map((server) => (
         <div key={server.name} className="h-full">
           <ServerCard server={server} />

@@ -90,6 +90,15 @@
 @layer base {
   html {
     font-family: 'HarmonyOS Sans SC', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    scroll-behavior: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* macOS 特定优化 */
+  @media (pointer: fine) {
+    html {
+      scroll-snap-type: none;
+    }
   }
   
   * {
@@ -98,6 +107,11 @@
   
   body {
     @apply bg-background text-foreground;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   
   .server-metric-progress {
@@ -120,21 +134,13 @@
     background-color: #ef4444;
   }
   
-  /* 简化滚动条 */
+  /* 优化滚动性能 */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    display: none;
   }
   
-  ::-webkit-scrollbar-track {
-    @apply bg-muted;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/40 rounded-full;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/60;
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 }
