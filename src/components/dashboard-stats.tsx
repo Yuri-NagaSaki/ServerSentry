@@ -4,7 +4,6 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useServers } from '@/hooks/use-servers';
 import { Cpu, Server, HardDrive, Wifi } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';
-import { motion } from 'framer-motion';
 
 import {
   cardColors,
@@ -89,23 +88,16 @@ export const DashboardStats: React.FC = () => {
   // 已加载状态
   return (
     <div className="space-y-6">
-      <motion.div 
-        className="flex justify-between items-center"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <motion.h2 
-          className="text-3xl font-bold tracking-tight" 
+      <div className="flex justify-between items-center">
+        <h2 
+          className="text-3xl font-bold tracking-tight hover:scale-[1.01] transition-transform duration-200" 
           suppressHydrationWarning
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 0.2 }}
         >
           监控概览
-        </motion.h2>
+        </h2>
         
         <LastUpdated timestamp={lastUpdated} />
-      </motion.div>
+      </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -119,7 +111,6 @@ export const DashboardStats: React.FC = () => {
             </div>
           }
           icon={<Server className="h-6 w-6" />}
-          delay={0}
         />
         <StatCard
           title="平均CPU使用率"
@@ -131,7 +122,6 @@ export const DashboardStats: React.FC = () => {
             </div>
           }
           icon={<Cpu className="h-6 w-6" />}
-          delay={1}
         />
         <StatCard
           title="平均内存使用率"
@@ -143,7 +133,6 @@ export const DashboardStats: React.FC = () => {
             </div>
           }
           icon={<HardDrive className="h-6 w-6" />}
-          delay={2}
         />
         <StatCard
           title="总流量"
@@ -157,7 +146,6 @@ export const DashboardStats: React.FC = () => {
             />
           }
           icon={<Wifi className="h-6 w-6" />}
-          delay={3}
         />
       </div>
     </div>

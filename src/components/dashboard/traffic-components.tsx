@@ -1,24 +1,20 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { formatBytes } from '@/lib/api';
-import { animations } from './animations';
 
 export interface TrafficArrowProps {
   direction?: 'up' | 'down';
   color: string;
-  delay?: number;
 }
 
-export const TrafficArrow: React.FC<TrafficArrowProps> = ({ direction = 'down', color, delay = 0 }) => (
-  <motion.span 
+export const TrafficArrow: React.FC<TrafficArrowProps> = ({ direction = 'down', color }) => (
+  <span 
     className="text-sm mr-0.5"
     style={{ color }}
-    {...animations.bounce(direction === 'down' ? 'up' : 'down', delay)}
   >
     {direction === 'down' ? '↓' : '↑'}
-  </motion.span>
+  </span>
 );
 
 export interface TrafficDisplayProps {
@@ -37,19 +33,13 @@ export const TrafficDisplay: React.FC<TrafficDisplayProps> = ({ download, upload
       </span>
     </div>
     
-    <motion.div 
+    <div 
       className="h-5 w-[1px] mx-2 opacity-20"
       style={{ backgroundColor: "currentColor" }}
-      animate={{ height: [16, 24, 16] }}
-      transition={{ 
-        duration: 3, 
-        repeat: Infinity, 
-        ease: "easeInOut" 
-      }}
     />
     
     <div className="flex items-center">
-      <TrafficArrow direction="up" color={uploadColor} delay={0.5} />
+      <TrafficArrow direction="up" color={uploadColor} />
       <span className="text-base font-bold" style={{ color: uploadColor }}>
         {formatBytes(upload).split(' ').join('')}
       </span>

@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import { animations } from './animations';
 
 export interface IconContainerProps {
   accentColor: string;
@@ -11,20 +9,18 @@ export interface IconContainerProps {
 
 export const IconContainer: React.FC<IconContainerProps> = ({ accentColor, icon }) => (
   <div 
-    className="p-3 rounded-xl backdrop-blur-sm shadow-inner mr-4 relative overflow-hidden"
+    className="p-3 rounded-xl backdrop-blur-sm shadow-inner mr-4 relative overflow-hidden hover:shadow-md transition-all duration-300"
     style={{ backgroundColor: `${accentColor}15` }}
   >
-    <motion.div
-      {...animations.pulse}
-      className="absolute inset-0 rounded-xl"
+    <div
+      className="absolute inset-0 rounded-xl opacity-30"
       style={{ backgroundColor: `${accentColor}10` }}
     />
-    <motion.div
+    <div
       className="relative z-10"
-      {...animations.rotate}
       style={{ color: accentColor }}
     >
       {icon}
-    </motion.div>
+    </div>
   </div>
 ); 

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { formatPercent } from '@/lib/api';
-import { motion } from 'framer-motion';
 
 interface ServerMetricProps {
   label: string;
@@ -70,18 +69,12 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium">{label}</span>
           {!isUnconfigured && (
-            <motion.span 
+            <span 
               className={`text-xs font-semibold ${colorTheme.text}`}
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
               suppressHydrationWarning
             >
               {percent}%
-            </motion.span>
+            </span>
           )}
         </div>
         <span className="text-sm text-muted-foreground" suppressHydrationWarning>
@@ -89,17 +82,12 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
         </span>
       </div>
       <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary/40 backdrop-blur-sm dark:bg-secondary/30">
-        <motion.div 
-          className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} ${colorTheme.glow} rounded-full`}
-          initial={{ width: 0 }}
-          animate={{ width: isUnconfigured ? "0%" : `${percent}%` }}
-          transition={{ 
-            duration: 0.8, 
-            ease: [0.34, 1.56, 0.64, 1] 
-          }}
+        <div 
+          className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} ${colorTheme.glow} rounded-full transition-all duration-800 ease-out`}
+          style={{ width: isUnconfigured ? "0%" : `${percent}%` }}
         >
           <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
@@ -12,15 +11,13 @@ interface ServerInfoProps {
 }
 
 export const ServerName: React.FC<{ name: string }> = ({ name }) => (
-  <motion.div 
-    whileHover={{ x: 2 }} 
-    transition={{ duration: 0.2 }}
-    className="flex items-center gap-1.5 min-w-0 max-w-full"
+  <div 
+    className="flex items-center gap-1.5 min-w-0 max-w-full hover:translate-x-0.5 transition-transform duration-200"
   >
     <span className="text-xl truncate flex-shrink" suppressHydrationWarning>
       {name}
     </span>
-  </motion.div>
+  </div>
 );
 
 export const UptimeDisplay: React.FC<{ uptime: string }> = ({ uptime }) => (
@@ -34,7 +31,7 @@ export const ServerTag: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex-shrink-0">
     <Badge 
       variant="outline" 
-      className="h-5 px-1 text-[10px] font-normal bg-background/50 dark:bg-background/30 whitespace-nowrap" 
+      className="h-5 px-1 text-[10px] font-normal bg-background/50 dark:bg-background/30 whitespace-nowrap hover:bg-background/70 transition-colors duration-200" 
       suppressHydrationWarning
     >
       {label}

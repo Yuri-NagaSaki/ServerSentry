@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import '../styles/fonts.css';
 @import '../styles/background.css';
+@import '../styles/performance.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -229,20 +230,57 @@
 @layer base {
   html {
     font-family: 'HarmonyOS Sans SC', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    /* macOS 滑动优化 */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
+  
   * {
     @apply border-border outline-ring/50;
   }
+  
   body {
     @apply bg-background text-foreground;
+    /* 防止过度滚动 */
+    overscroll-behavior: none;
+    /* 启用硬件加速 */
+    transform: translate3d(0, 0, 0);
+    /* 优化滚动 */
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* 全局性能优化 */
+  * {
+    /* 减少重排重绘 */
+    box-sizing: border-box;
+  }
+  
+  /* 主容器优化 */
+  .main-container {
+    /* GPU 加速 */
+    transform: translate3d(0, 0, 0);
+    will-change: scroll-position;
+    /* 优化渲染 */
+    contain: layout style;
+    /* 平滑滚动 */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
   
   .server-metric-progress {
     @apply relative h-2 w-full overflow-hidden rounded-full bg-secondary;
+    /* 进度条优化 */
+    transform: translate3d(0, 0, 0);
+    contain: layout style paint;
   }
 
   .server-metric-progress-bar {
-    @apply absolute left-0 top-0 h-full rounded-full transition-all;
+    @apply absolute left-0 top-0 h-full rounded-full;
+    /* GPU 加速动画 */
+    will-change: width;
+    transform: translate3d(0, 0, 0);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .server-metric-progress-bar.success {
@@ -259,19 +297,32 @@
   
   /* 优化滚动条样式 */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   
   ::-webkit-scrollbar-track {
     @apply bg-muted;
+    border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/40 rounded-full;
+    /* GPU 加速 */
+    transform: translate3d(0, 0, 0);
   }
   
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/60;
+  }
+  
+  /* 隐藏滚动条但保持功能 */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
   }
 }
