@@ -19,8 +19,9 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-        {/* 字体预连接和预加载 */}
-        <link rel="preconnect" href="/" />
+        {/* API预连接优化 */}
+        <link rel="preconnect" href={config.apiUrl} />
+        {/* 字体预加载 */}
         <link rel="preload" href="/fonts/HarmonyOS_Sans_SC_Medium.woff2" as="font" type="font/woff2" crossOrigin="" />
         {/* 延迟加载非关键CSS */}
         <script dangerouslySetInnerHTML={{
