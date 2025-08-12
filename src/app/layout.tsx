@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { config } from "@/lib/config";
 import { Providers } from "./providers";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: config.siteTitle,
@@ -56,6 +57,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <Providers>{children}</Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
