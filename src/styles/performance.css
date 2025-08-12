@@ -1,0 +1,145 @@
+/* macOS 滑动性能优化 */
+
+/* 强制 GPU 加速所有需要的元素 */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* 优化滚动性能 */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+/* macOS 专用滚动优化 */
+@supports (-webkit-backdrop-filter: blur(10px)) {
+  .macos-scroll-optimized {
+    /* 启用硬件加速 */
+    transform: translate3d(0, 0, 0);
+    will-change: scroll-position;
+    
+    /* 优化重绘 */
+    contain: layout style paint;
+    
+    /* 平滑滚动 */
+    scroll-snap-type: y proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 减少重排重绘的优化 */
+.layout-optimized {
+  contain: layout;
+  will-change: auto;
+}
+
+.paint-optimized {
+  contain: paint;
+  transform: translateZ(0);
+}
+
+/* 卡片组件优化 */
+.card-optimized {
+  /* 启用 GPU 加速 */
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  
+  /* 优化渲染层 */
+  isolation: isolate;
+  contain: layout style paint;
+  
+  /* 减少重排 */
+  backface-visibility: hidden;
+}
+
+/* 网格布局优化 */
+.grid-optimized {
+  /* 启用 GPU 加速 */
+  transform: translateZ(0);
+  
+  /* 优化布局计算 */
+  contain: layout;
+  
+  /* 减少重绘 */
+  will-change: contents;
+}
+
+/* 背景元素优化 */
+.background-optimized {
+  /* 固定背景减少重绘 */
+  background-attachment: local;
+  
+  /* GPU 层 */
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  
+  /* 优化合成 */
+  isolation: isolate;
+}
+
+/* 悬停效果优化 */
+.hover-optimized {
+  /* 预先分配 GPU 层 */
+  will-change: transform, opacity, filter;
+  transform: translate3d(0, 0, 0);
+  
+  /* 快速过渡 */
+  transition: transform 0.15s ease-out, 
+              opacity 0.15s ease-out,
+              filter 0.15s ease-out;
+}
+
+/* 进度条动画优化 */
+.progress-optimized {
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
+  will-change: width;
+  
+  /* 优化动画 */
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 防止 iOS Safari 回弹 */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 优化 backdrop-filter 性能 */
+.backdrop-optimized {
+  /* 减少模糊半径以提高性能 */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
+  will-change: backdrop-filter;
+}
+
+/* 文本渲染优化 */
+.text-optimized {
+  /* 优化文本渲染 */
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* 减少重排 */
+  contain: layout style;
+}
+
+/* 响应式图片优化 */
+.image-optimized {
+  /* GPU 加速 */
+  transform: translate3d(0, 0, 0);
+  
+  /* 优化解码 */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+  
+  /* 减少重排 */
+  contain: layout;
+}
