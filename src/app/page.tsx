@@ -38,7 +38,7 @@ export default function Home() {
             
             {/* 服务器列表 - 恢复原始设计逻辑 */}
             {!isLoading && (
-              <div className="animate-fade-in server-grid">
+              <div className="animate-fade-in server-grid-container">
                 {selectedRegion ? (
                   // 选择了特定地区时，只显示该地区的服务器，不显示地区标题
                   <RegionGroupView 
@@ -54,14 +54,16 @@ export default function Home() {
             
             {/* 加载状态 */}
             {isLoading && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 server-grid">
-                {[...Array(8)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className="h-48 bg-secondary/20 rounded-md animate-pulse animate-slide-up" 
-                    style={{ animationDelay: `${i * 50}ms` }}
-                  />
-                ))}
+              <div className="server-grid-container">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 server-grid">
+                  {[...Array(8)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className="server-card loading-placeholder skeleton" 
+                      style={{ animationDelay: `${i * 50}ms` }}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </div>

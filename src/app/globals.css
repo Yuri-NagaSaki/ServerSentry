@@ -239,4 +239,56 @@
       transform: scale(1);
     }
   }
+  
+  /* CLS预防 - 固定尺寸和布局稳定性 */
+  .stats-container {
+    min-height: 140px;
+    contain: layout style;
+  }
+  
+  .stats-grid {
+    min-height: 100px;
+  }
+  
+  .server-card {
+    min-height: 280px;
+    contain: layout style;
+  }
+  
+  .dashboard-title {
+    min-height: 48px;
+    line-height: 1.2;
+  }
+  
+  .server-grid-container {
+    min-height: 300px;
+    contain: layout;
+  }
+  
+  .loading-placeholder {
+    width: 100%;
+    min-height: inherit;
+    background: var(--muted);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* 改进的骨架屏 */
+  .skeleton {
+    background: linear-gradient(90deg, var(--muted) 25%, transparent 50%, var(--muted) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite ease-in-out;
+    border-radius: inherit;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
 }

@@ -74,8 +74,8 @@ export const DashboardStats: React.FC = () => {
   // 加载中状态
   if (!mounted) {
     return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
+      <div className="stats-container">
+        <div className="flex justify-between items-center dashboard-title">
           <h2 className="text-3xl font-bold tracking-tight" suppressHydrationWarning>监控概览</h2>
           <div className="text-sm text-muted-foreground flex items-center">
             <Wifi className="h-4 w-4 mr-1" />
@@ -83,15 +83,17 @@ export const DashboardStats: React.FC = () => {
           </div>
         </div>
         
-        <StatsSkeletons />
+        <div className="stats-grid">
+          <StatsSkeletons />
+        </div>
       </div>
     );
   }
   
   // 已加载状态
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="stats-container">
+      <div className="flex justify-between items-center dashboard-title">
         <h2 
           className="text-3xl font-bold tracking-tight" 
           suppressHydrationWarning
@@ -102,54 +104,56 @@ export const DashboardStats: React.FC = () => {
         <LastUpdated timestamp={lastUpdated} />
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title="服务器"
-          value={
-            <div className="flex items-baseline">
-              <span className="text-2xl font-bold">{stats.onlineServers}</span>
-              <span className="text-xs opacity-70 mx-1.5">/</span>
-              <span className="text-xl font-bold opacity-80">{stats.totalServers}</span>
-            </div>
-          }
-          icon={<Server className="h-6 w-6" />}
-        />
-        <StatCard
-          title="平均CPU使用率"
-          value={
-            <div className="flex items-baseline">
-              <span className="text-2xl font-bold">{stats.avgCpuUsage}</span>
-              <span className="text-xs opacity-70 ml-1">%</span>
-            </div>
-          }
-          icon={<Cpu className="h-6 w-6" />}
-        />
-        <StatCard
-          title="实时网络速率"
-          value={
-            <div className="flex items-baseline space-x-2 min-w-0">
-              <div className="flex items-baseline whitespace-nowrap">
-                <span className="text-sm font-medium opacity-70 flex-shrink-0">↓</span>
-                <span className="text-lg font-bold ml-1 font-mono">{formatSpeed(stats.totalNetworkRx, 1)}</span>
+      <div className="stats-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            title="服务器"
+            value={
+              <div className="flex items-baseline">
+                <span className="text-2xl font-bold">{stats.onlineServers}</span>
+                <span className="text-xs opacity-70 mx-1.5">/</span>
+                <span className="text-xl font-bold opacity-80">{stats.totalServers}</span>
               </div>
-              <div className="flex items-baseline whitespace-nowrap">
-                <span className="text-sm font-medium opacity-70 flex-shrink-0">↑</span>
-                <span className="text-lg font-bold ml-1 font-mono">{formatSpeed(stats.totalNetworkTx, 1)}</span>
+            }
+            icon={<Server className="h-6 w-6" />}
+          />
+          <StatCard
+            title="平均CPU使用率"
+            value={
+              <div className="flex items-baseline">
+                <span className="text-2xl font-bold">{stats.avgCpuUsage}</span>
+                <span className="text-xs opacity-70 ml-1">%</span>
               </div>
-            </div>
-          }
-          icon={<Activity className="h-6 w-6" />}
-        />
-        <StatCard
-          title="总流量"
-          value={
-            <TrafficDisplay 
-              download={stats.totalDownload}
-              upload={stats.totalUpload}
-            />
-          }
-          icon={<Wifi className="h-6 w-6" />}
-        />
+            }
+            icon={<Cpu className="h-6 w-6" />}
+          />
+          <StatCard
+            title="实时网络速率"
+            value={
+              <div className="flex items-baseline space-x-2 min-w-0">
+                <div className="flex items-baseline whitespace-nowrap">
+                  <span className="text-sm font-medium opacity-70 flex-shrink-0">↓</span>
+                  <span className="text-lg font-bold ml-1 font-mono">{formatSpeed(stats.totalNetworkRx, 1)}</span>
+                </div>
+                <div className="flex items-baseline whitespace-nowrap">
+                  <span className="text-sm font-medium opacity-70 flex-shrink-0">↑</span>
+                  <span className="text-lg font-bold ml-1 font-mono">{formatSpeed(stats.totalNetworkTx, 1)}</span>
+                </div>
+              </div>
+            }
+            icon={<Activity className="h-6 w-6" />}
+          />
+          <StatCard
+            title="总流量"
+            value={
+              <TrafficDisplay 
+                download={stats.totalDownload}
+                upload={stats.totalUpload}
+              />
+            }
+            icon={<Wifi className="h-6 w-6" />}
+          />
+        </div>
       </div>
     </div>
   );
