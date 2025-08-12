@@ -64,12 +64,12 @@ export const Navbar: React.FC = React.memo(function Navbar() {
             >
               <Image
                 src={theme === 'dark' ? '/github-mark-white.svg' : '/github-mark.svg'}
-                alt="GitHub"
+                alt=""
                 width={20}
                 height={20}
                 className="opacity-87"
               />
-              <span className="sr-only">GitHub</span>
+              <span className="sr-only">访问GitHub仓库</span>
             </a>
             
             <div suppressHydrationWarning>

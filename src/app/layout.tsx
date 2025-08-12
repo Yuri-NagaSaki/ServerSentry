@@ -23,17 +23,6 @@ export default function RootLayout({
         <link rel="preconnect" href={config.apiUrl} />
         {/* 字体预加载 */}
         <link rel="preload" href="/fonts/HarmonyOS_Sans_SC_Medium.woff2" as="font" type="font/woff2" crossOrigin="" />
-        {/* 延迟加载非关键CSS */}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function(){
-              var d=document,s=d.createElement('link');
-              s.rel='preload';s.as='style';s.href='/_next/static/css/app/globals.css';
-              s.onload=function(){this.rel='stylesheet'};
-              d.head.appendChild(s);
-            })();
-          `
-        }} />
         {/* 关键CSS内联 */}
         <style dangerouslySetInnerHTML={{
           __html: `
