@@ -9,7 +9,7 @@ interface NetworkArrowProps {
 }
 
 const NetworkArrow: React.FC<NetworkArrowProps> = ({ direction }) => (
-  <span className="text-sm flex-shrink-0 text-muted-foreground">
+  <span className="text-sm flex-shrink-0 text-muted-foreground transition-all duration-150 hover:text-foreground hover:scale-110">
     {direction === 'down' ? '↓' : '↑'}
   </span>
 );
@@ -24,9 +24,9 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = ({
   downloadSpeed, 
   uploadSpeed 
 }) => (
-  <div className="p-2.5 rounded-xl bg-secondary h-full">
+  <div className="p-2.5 rounded-xl bg-secondary h-full transition-all duration-200 hover:bg-secondary/80 hover:scale-[1.02] cursor-pointer">
     <div className="flex items-center space-x-1.5 mb-1.5">
-      <Wifi className="h-3.5 w-3.5 text-muted-foreground" />
+      <Wifi className="h-3.5 w-3.5 text-muted-foreground transition-colors duration-150 hover:text-foreground" />
       <span className="text-xs font-medium">实时网络</span>
     </div>
     
@@ -34,7 +34,7 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = ({
       <div className="flex items-center min-h-[18px] text-xs">
         <NetworkArrow direction="down" />
         <span className="font-medium ml-1 w-6 flex-shrink-0">下载</span>
-        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
           {formatSpeed(downloadSpeed, 1)}
         </span>
       </div>
@@ -42,7 +42,7 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = ({
       <div className="flex items-center min-h-[18px] text-xs">
         <NetworkArrow direction="up" />
         <span className="font-medium ml-1 w-6 flex-shrink-0">上传</span>
-        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
           {formatSpeed(uploadSpeed, 1)}
         </span>
       </div>
@@ -60,25 +60,25 @@ export const TotalTrafficPanel: React.FC<TotalTrafficPanelProps> = ({
   totalDownload,
   totalUpload
 }) => (
-  <div className="p-2.5 rounded-xl bg-secondary h-full">
+  <div className="p-2.5 rounded-xl bg-secondary h-full transition-all duration-200 hover:bg-secondary/80 hover:scale-[1.02] cursor-pointer">
     <div className="flex items-center space-x-1.5 mb-1.5">
-      <HardDrive className="h-3.5 w-3.5 text-muted-foreground" />
+      <HardDrive className="h-3.5 w-3.5 text-muted-foreground transition-colors duration-150 hover:text-foreground" />
       <span className="text-xs font-medium">总流量</span>
     </div>
     
     <div className="space-y-1.5">
       <div className="flex items-center min-h-[18px] text-xs">
-        <span className="text-sm flex-shrink-0 text-muted-foreground">↓</span>
+        <span className="text-sm flex-shrink-0 text-muted-foreground transition-colors duration-150 hover:text-foreground">↓</span>
         <span className="font-medium ml-1 w-6 flex-shrink-0">接收</span>
-        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
           {formatBytes(totalDownload, 1)}
         </span>
       </div>
       
       <div className="flex items-center min-h-[18px] text-xs">
-        <span className="text-sm flex-shrink-0 text-muted-foreground">↑</span>
+        <span className="text-sm flex-shrink-0 text-muted-foreground transition-colors duration-150 hover:text-foreground">↑</span>
         <span className="font-medium ml-1 w-6 flex-shrink-0">发送</span>
-        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto transition-colors duration-150 hover:text-foreground" suppressHydrationWarning>
           {formatBytes(totalUpload, 1)}
         </span>
       </div>

@@ -29,7 +29,7 @@ export const ServerTag: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex-shrink-0">
     <Badge 
       variant="outline" 
-      className="h-5 px-1 text-[10px] font-normal bg-background/50 dark:bg-background/30 whitespace-nowrap" 
+      className="h-5 px-1 text-[10px] font-normal bg-background/50 dark:bg-background/30 whitespace-nowrap transition-colors duration-150 hover:bg-background/80 hover:border-primary/20" 
       suppressHydrationWarning
     >
       {label}
