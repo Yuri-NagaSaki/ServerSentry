@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Server, formatBytes } from '@/lib/api';
-import { Card, CardContent, CardHeader } from './ui/card';
 import { ServerMetric } from './server-metric';
 import { Clock, MapPin, Server as ServerIcon } from 'lucide-react';
 
@@ -32,91 +31,78 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
   };
   
   return (
-    <div className="h-full server-card">
-      <Card className="overflow-hidden relative border shadow-sm h-full bg-card transform-gpu transition-all duration-200 hover:shadow-md hover:scale-[1.02] hover:border-border/80 cursor-pointer">
-        {/* 卡片内部容器 */}
-        <div className="relative z-10 h-full flex flex-col">
-          <CardHeader className="pb-2 space-y-2">
-            {/* 服务器名称和状态 */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 min-w-0 max-w-[70%]">
-                <StatusIndicator isOnline={isOnline} />
-                <span className="text-xl truncate" suppressHydrationWarning>
-                  {server.alias || server.name}
-                </span>
-              </div>
-              <StatusBadge isOnline={isOnline} />
-            </div>
-            
-            {/* 服务器信息和网络类型 */}
-            <div className="flex items-center justify-between">
-              {/* 左侧：运行时间信息 */}
-              <div className="flex-shrink-0">
-                <UptimeDisplay uptime={server.uptime} />
-              </div>
-              
-              {/* 右侧：IP状态、服务器类型和位置标签 */}
-              <div className="flex items-center gap-0.5 flex-shrink-0 overflow-x-auto whitespace-nowrap">
-                {/* IP状态标签 */}
-                <IPStatusBadges 
-                  ipv4Online={server.online4}
-                  ipv6Online={server.online6}
-                />
-                
-                {/* 服务器类型标签 */}
-                {server.type && <ServerTypeTag label={server.type} />}
-                
-                {/* 位置标签 */}
-                {server.location && <LocationTag label={server.location} />}
-              </div>
-            </div>
-          </CardHeader>
-          
-          <CardContent className="space-y-4 pt-0 flex-grow flex flex-col">
-            <div className="space-y-3">
-              <ServerMetric 
-                label="CPU"
-                value={server.cpu}
-                total={100}
-                unit="%"
-              />
-              
-              <ServerMetric 
-                label="内存"
-                value={server.memory_used}
-                total={server.memory_total}
-                formatter={(val) => formatBytes(val * 1024)}
-              />
-              
-              <ServerMetric 
-                label="硬盘"
-                value={server.hdd_used}
-                total={server.hdd_total}
-                formatter={(val) => formatBytes(val * 1024 * 1024)}
-              />
-              
-              <ServerMetric 
-                label="SWAP"
-                value={server.swap_used}
-                total={server.swap_total || 1}
-                formatter={swapFormatter}
-              />
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 mt-auto">
-              <RealTimeNetworkPanel
-                downloadSpeed={server.network_rx}
-                uploadSpeed={server.network_tx}
-              />
-              
-              <TotalTrafficPanel
-                totalDownload={server.network_in}
-                totalUpload={server.network_out}
-              />
-            </div>
-          </CardContent>
+    <div className="h-full server-card bg-card rounded-xl border shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] hover:border-border/80 cursor-pointer">
+      {/* 服务器信息头部 */}
+      <div className="p-4 pb-2 space-y-2">
+        {/* 名称和状态行 */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5 min-w-0 max-w-[70%]">
+            <StatusIndicator isOnline={isOnline} />
+            <span className="text-xl truncate" suppressHydrationWarning>
+              {server.alias || server.name}
+            </span>
+          </div>
+          <StatusBadge isOnline={isOnline} />
         </div>
-      </Card>
+        
+        {/* 运行时间和标签行 */}
+        <div className="flex items-center justify-between">
+          <UptimeDisplay uptime={server.uptime} />
+          
+          <div className="flex items-center gap-0.5 overflow-x-auto whitespace-nowrap">
+            <IPStatusBadges 
+              ipv4Online={server.online4}
+              ipv6Online={server.online6}
+            />
+            {server.type && <ServerTypeTag label={server.type} />}
+            {server.location && <LocationTag label={server.location} />}
+          </div>
+        </div>
+      </div>
+      
+      {/* 服务器指标内容 */}
+      <div className="p-4 pt-0 space-y-3 flex-grow flex flex-col">
+        <ServerMetric 
+          label="CPU"
+          value={server.cpu}
+          total={100}
+          unit="%"
+        />
+        
+        <ServerMetric 
+          label="内存"
+          value={server.memory_used}
+          total={server.memory_total}
+          formatter={(val) => formatBytes(val * 1024)}
+        />
+        
+        <ServerMetric 
+          label="硬盘"
+          value={server.hdd_used}
+          total={server.hdd_total}
+          formatter={(val) => formatBytes(val * 1024 * 1024)}
+        />
+        
+        <ServerMetric 
+          label="SWAP"
+          value={server.swap_used}
+          total={server.swap_total || 1}
+          formatter={swapFormatter}
+        />
+        
+        {/* 网络面板 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 mt-auto">
+          <RealTimeNetworkPanel
+            downloadSpeed={server.network_rx}
+            uploadSpeed={server.network_tx}
+          />
+          
+          <TotalTrafficPanel
+            totalDownload={server.network_in}
+            totalUpload={server.network_out}
+          />
+        </div>
+      </div>
     </div>
   );
 });
@@ -125,10 +111,10 @@ ServerCard.displayName = 'ServerCard';
 // 运行时间显示组件
 const UptimeDisplay: React.FC<{ uptime: string }> = React.memo(function UptimeDisplay({ uptime }) {
   return (
-    <div className="flex items-center space-x-1 flex-shrink-0 text-muted-foreground text-xs whitespace-nowrap">
-      <Clock className="h-3.5 w-3.5" />
-      <span className="whitespace-nowrap" suppressHydrationWarning>运行: {uptime}</span>
-    </div>
+    <span className="inline-flex items-center text-muted-foreground text-xs whitespace-nowrap">
+      <Clock className="h-3.5 w-3.5 mr-1" />
+      <span suppressHydrationWarning>运行: {uptime}</span>
+    </span>
   );
 });
 UptimeDisplay.displayName = 'UptimeDisplay';
@@ -136,12 +122,10 @@ UptimeDisplay.displayName = 'UptimeDisplay';
 // 服务器类型标签
 const ServerTypeTag: React.FC<{ label: string }> = React.memo(function ServerTypeTag({ label }) {
   return (
-    <div className="flex-shrink-0">
-      <div className="flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
-        <ServerIcon className="h-3 w-3 mr-0.5 text-muted-foreground flex-shrink-0" />
-        <span suppressHydrationWarning>{label}</span>
-      </div>
-    </div>
+    <span className="inline-flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
+      <ServerIcon className="h-3 w-3 mr-0.5 text-muted-foreground" />
+      <span suppressHydrationWarning>{label}</span>
+    </span>
   );
 });
 ServerTypeTag.displayName = 'ServerTypeTag';
@@ -149,12 +133,10 @@ ServerTypeTag.displayName = 'ServerTypeTag';
 // 位置标签
 const LocationTag: React.FC<{ label: string }> = React.memo(function LocationTag({ label }) {
   return (
-    <div className="flex-shrink-0">
-      <div className="flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
-        <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground flex-shrink-0" />
-        <span suppressHydrationWarning>{label}</span>
-      </div>
-    </div>
+    <span className="inline-flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
+      <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground" />
+      <span suppressHydrationWarning>{label}</span>
+    </span>
   );
 });
 LocationTag.displayName = 'LocationTag'; 

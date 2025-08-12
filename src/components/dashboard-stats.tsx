@@ -76,7 +76,7 @@ export const DashboardStats: React.FC = () => {
     return (
       <div className="stats-container">
         <div className="flex justify-between items-center dashboard-title">
-          <h2 className="text-3xl font-bold tracking-tight" suppressHydrationWarning>监控概览</h2>
+          <h2 className="text-3xl font-bold tracking-tight dashboard-main-title" suppressHydrationWarning>监控概览</h2>
           <div className="text-sm text-muted-foreground flex items-center">
             <Wifi className="h-4 w-4 mr-1" />
             <span suppressHydrationWarning>最后更新: 加载中...</span>
@@ -95,7 +95,7 @@ export const DashboardStats: React.FC = () => {
     <div className="stats-container">
       <div className="flex justify-between items-center dashboard-title">
         <h2 
-          className="text-3xl font-bold tracking-tight" 
+          className="text-3xl font-bold tracking-tight dashboard-main-title" 
           suppressHydrationWarning
         >
           监控概览

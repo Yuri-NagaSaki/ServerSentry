@@ -1,19 +1,19 @@
 'use client';
 
 import React from 'react';
-import { Activity } from 'lucide-react';
 
 interface StatusIndicatorProps {
   isOnline: boolean;
 }
 
 export const StatusIndicator: React.FC<StatusIndicatorProps> = ({ isOnline }) => (
-  <div className="relative">
+  <div className={`relative h-5 w-5 rounded-full flex items-center justify-center ${
+    isOnline ? 'bg-green-500/20' : 'bg-gray-400/20'
+  }`}>
     <div 
-      className={`absolute -left-[5px] -top-[5px] h-[10px] w-[10px] rounded-full ${
+      className={`h-2 w-2 rounded-full ${
         isOnline ? 'bg-green-500' : 'bg-gray-400'
       }`}
     />
-    <Activity className="h-5 w-5 text-primary/80" />
   </div>
 ); 

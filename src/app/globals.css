@@ -258,6 +258,24 @@
   .dashboard-title {
     min-height: 48px;
     line-height: 1.2;
+    contain: layout;
+  }
+  
+  /* LCP优化 - 立即显示标题 */
+  .dashboard-main-title {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0;
+    will-change: auto;
+  }
+  
+  /* 字体加载后的平滑过渡 */
+  .dashboard-main-title.font-loaded {
+    font-family: 'HarmonyOS Sans SC', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
+    transition: font-family 0.1s ease-out;
   }
   
   .server-grid-container {
