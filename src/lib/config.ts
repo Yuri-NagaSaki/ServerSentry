@@ -4,9 +4,9 @@
 
 export const config = {
   /**
-   * API地址，可通过环境变量NEXT_PUBLIC_API_URL覆盖
+   * API地址 - 使用本地代理路由
    */
-  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  apiUrl: '/api/servers',
   
   /**
    * 数据刷新间隔（毫秒）- 降低刷新频率以减少CPU负载

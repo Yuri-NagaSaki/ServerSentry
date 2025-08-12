@@ -65,7 +65,7 @@ const apiClient = axios.create({
  */
 export const getServersStatus = async (): Promise<StatsResponse> => {
   try {
-    const response = await apiClient.get<StatsResponse>('/json/stats.json');
+    const response = await apiClient.get<StatsResponse>('');
     return response.data;
   } catch (error) {
     console.error('获取服务器状态失败:', error);
