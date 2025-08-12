@@ -2,8 +2,9 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { useServers } from '@/hooks/use-servers';
-import { Cpu, Server, HardDrive, Wifi } from 'lucide-react';
+import { Cpu, Server, Wifi, Activity } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';
+import { formatSpeed } from '@/lib/api';
 
 import {
   StatCard,
@@ -26,7 +27,8 @@ export const DashboardStats: React.FC = () => {
         totalServers: 0,
         onlineServers: 0,
         avgCpuUsage: 0,
-        avgMemoryUsage: 0,
+        totalNetworkRx: 0,
+        totalNetworkTx: 0,
         totalDownload: 0,
         totalUpload: 0,
       };
@@ -36,27 +38,29 @@ export const DashboardStats: React.FC = () => {
     const totalServers = data.servers.length;
     
     let totalCpu = 0;
-    let totalMemory = 0;
+    let totalNetworkRx = 0;
+    let totalNetworkTx = 0;
     let totalDownload = 0;
     let totalUpload = 0;
     
     data.servers.forEach((server) => {
       if (server.online4 || server.online6) {
         totalCpu += server.cpu || 0;
-        totalMemory += (server.memory_used / server.memory_total) * 100 || 0;
+        totalNetworkRx += server.network_rx || 0;
+        totalNetworkTx += server.network_tx || 0;
         totalDownload += server.network_in || 0;
         totalUpload += server.network_out || 0;
       }
     });
     
     const avgCpuUsage = onlineServers ? Math.round(totalCpu / onlineServers) : 0;
-    const avgMemoryUsage = onlineServers ? Math.round(totalMemory / onlineServers) : 0;
     
     return {
       totalServers,
       onlineServers,
       avgCpuUsage,
-      avgMemoryUsage,
+      totalNetworkRx,
+      totalNetworkTx,
       totalDownload,
       totalUpload,
     };
@@ -121,14 +125,20 @@ export const DashboardStats: React.FC = () => {
           icon={<Cpu className="h-6 w-6" />}
         />
         <StatCard
-          title="平均内存使用率"
+          title="实时网络速率"
           value={
-            <div className="flex items-baseline">
-              <span className="text-2xl font-bold">{stats.avgMemoryUsage}</span>
-              <span className="text-xs opacity-70 ml-1">%</span>
+            <div className="flex items-baseline space-x-2 min-w-0">
+              <div className="flex items-baseline whitespace-nowrap">
+                <span className="text-sm font-medium opacity-70 flex-shrink-0">↓</span>
+                <span className="text-lg font-bold ml-1 font-mono">{formatSpeed(stats.totalNetworkRx, 1)}</span>
+              </div>
+              <div className="flex items-baseline whitespace-nowrap">
+                <span className="text-sm font-medium opacity-70 flex-shrink-0">↑</span>
+                <span className="text-lg font-bold ml-1 font-mono">{formatSpeed(stats.totalNetworkTx, 1)}</span>
+              </div>
             </div>
           }
-          icon={<HardDrive className="h-6 w-6" />}
+          icon={<Activity className="h-6 w-6" />}
         />
         <StatCard
           title="总流量"
