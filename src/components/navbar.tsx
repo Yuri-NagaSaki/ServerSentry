@@ -6,11 +6,38 @@ import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 export const Navbar: React.FC = React.memo(function Navbar() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const toggleTheme = () => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
+  
+  // 防止水合错误，在mounted之前不显示主题按钮
+  if (!mounted) {
+    return (
+      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+        <div className="flex h-14 items-center justify-center">
+          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <div className="flex items-center space-x-2 font-bold">
+              <span className="text-xl">
+                {config.siteTitle}
+              </span>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <GitHubLink />
+              <div className="h-9 w-9"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
   
   return (
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
@@ -27,17 +54,17 @@ export const Navbar: React.FC = React.memo(function Navbar() {
             
             <button
               type="button"
-              aria-label={resolvedTheme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
+              aria-label={theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
               className="inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors hover:bg-secondary/50"
               onClick={toggleTheme}
             >
-              {resolvedTheme === 'dark' ? (
+              {theme === 'dark' ? (
                 <Sun className="h-5 w-5" />
               ) : (
                 <Moon className="h-5 w-5" />
               )}
               <span className="sr-only">
-                {resolvedTheme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
+                {theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
               </span>
             </button>
           </div>
