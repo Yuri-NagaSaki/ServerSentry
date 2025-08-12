@@ -16,8 +16,8 @@ export const RegionGroupView: React.FC<RegionGroupViewProps> = ({
 }) => {
   return (
     <div className="space-y-8">
-      {regionGroups.map(({ region, servers }) => (
-        <div key={region} className="space-y-4">
+      {regionGroups.map(({ region, servers }, groupIndex) => (
+        <div key={region} className="space-y-4 animate-slide-up" style={{ animationDelay: `${groupIndex * 100}ms` }}>
           {showRegionHeaders && (
             <div className="flex items-center gap-2 border-b pb-2">
               <MapPin className="h-5 w-5 text-primary" />
@@ -29,9 +29,15 @@ export const RegionGroupView: React.FC<RegionGroupViewProps> = ({
             </div>
           )}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {servers.map((server) => (
-              <ServerCard key={server.name} server={server} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 server-grid">
+            {servers.map((server, serverIndex) => (
+              <div 
+                key={server.name}
+                className="animate-fade-in transform-gpu"
+                style={{ animationDelay: `${(groupIndex * 100) + (serverIndex * 30)}ms` }}
+              >
+                <ServerCard server={server} />
+              </div>
             ))}
           </div>
         </div>

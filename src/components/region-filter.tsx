@@ -56,15 +56,15 @@ export const RegionSelect: React.FC<RegionSelectProps> = ({
       
       {/* 下拉菜单 */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-full min-w-[180px] bg-background border border-border rounded-md shadow-lg z-50 max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 w-full min-w-[180px] bg-background border border-border rounded-md shadow-lg z-50 max-h-60 overflow-y-auto animate-scale-in">
           {/* 全部选项 */}
           <button
             onClick={() => handleSelect(null)}
-            className="w-full px-3 py-2 text-left hover:bg-secondary/50 flex items-center justify-between group"
+            className="w-full px-3 py-2 text-left hover:bg-secondary/50 flex items-center justify-between group transition-colors duration-150"
           >
             <span className="text-sm">全部地区</span>
             {selectedRegion === null && (
-              <Check className="h-4 w-4 text-primary" />
+              <Check className="h-4 w-4 text-primary animate-fade-in" />
             )}
           </button>
           
@@ -74,15 +74,16 @@ export const RegionSelect: React.FC<RegionSelectProps> = ({
           )}
           
           {/* 地区选项 */}
-          {regions.map((region) => (
+          {regions.map((region, index) => (
             <button
               key={region}
               onClick={() => handleSelect(region)}
-              className="w-full px-3 py-2 text-left hover:bg-secondary/50 flex items-center justify-between group"
+              className="w-full px-3 py-2 text-left hover:bg-secondary/50 flex items-center justify-between group transition-colors duration-150"
+              style={{ animationDelay: `${index * 20}ms` }}
             >
               <span className="text-sm">{region}</span>
               {selectedRegion === region && (
-                <Check className="h-4 w-4 text-primary" />
+                <Check className="h-4 w-4 text-primary animate-fade-in" />
               )}
             </button>
           ))}

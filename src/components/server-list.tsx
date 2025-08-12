@@ -32,18 +32,26 @@ export const ServerList: React.FC = React.memo(function ServerList() {
   
   if (!data?.servers) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 transform-gpu">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 server-grid">
         {Array(8).fill(null).map((_, i) => (
-          <div key={i} className="h-[300px] bg-muted/10 rounded-lg transform-gpu" />
+          <div 
+            key={i} 
+            className="h-[300px] bg-muted/10 rounded-lg animate-pulse animate-slide-up" 
+            style={{ animationDelay: `${i * 50}ms` }}
+          />
         ))}
       </div>
     );
   }
   
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 transform-gpu">
-      {sortedServers.map((server) => (
-        <ServerCardItem key={server.name} server={server} />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 server-grid">
+      {sortedServers.map((server, index) => (
+        <ServerCardItem 
+          key={server.name} 
+          server={server} 
+          index={index}
+        />
       ))}
     </div>
   );
@@ -51,9 +59,12 @@ export const ServerList: React.FC = React.memo(function ServerList() {
 ServerList.displayName = 'ServerList';
 
 // ServerCardItem 组件，避免重复渲染
-const ServerCardItem: React.FC<{ server: Server }> = React.memo(function ServerCardItem({ server }) {
+const ServerCardItem: React.FC<{ server: Server; index: number }> = React.memo(function ServerCardItem({ server, index }) {
   return (
-    <div className="h-full">
+    <div 
+      className="h-full animate-fade-in transform-gpu" 
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
       <ServerCard server={server} />
     </div>
   );

@@ -90,7 +90,7 @@
 @layer base {
   html {
     font-family: 'HarmonyOS Sans SC', ui-sans-serif, system-ui, -apple-system, sans-serif;
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     background-color: var(--background);
     transform: translateZ(0);
@@ -116,6 +116,31 @@
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--background);
     will-change: scroll-position;
+    /* 丝滑滚动优化 */
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  
+  /* 丝滑滚动容器 */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+  
+  /* 内容容器优化 */
+  .content-container {
+    contain: layout;
+    will-change: contents;
+  }
+  
+  /* 服务器卡片容器优化 */
+  .server-grid {
+    contain: layout;
+    will-change: contents;
+    transform: translateZ(0);
   }
   
   .server-metric-progress {
@@ -140,13 +165,28 @@
   
   /* 优化滚动性能 */
   ::-webkit-scrollbar {
-    display: none;
+    width: 6px;
+    height: 6px;
   }
   
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(155, 155, 155, 0.3);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(155, 155, 155, 0.5);
+  }
+  
+  /* Firefox 滚动条 */
   * {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(155, 155, 155, 0.3) transparent;
   }
   
   /* GPU加速优化类 */
@@ -154,5 +194,49 @@
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     perspective: 1000px;
+  }
+  
+  /* 轻量级动画效果 */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.2s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.15s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 }
