@@ -61,6 +61,11 @@ export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function Ser
     }
   }, [percent, isUnconfigured]);
   
+  // 缓存样式字符串
+  const progressStyle = React.useMemo(() => ({
+    width: isUnconfigured ? "0%" : `${percent}%`
+  }), [percent, isUnconfigured]);
+  
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
@@ -79,10 +84,10 @@ export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function Ser
           {isUnconfigured ? "未配置" : `${formattedValue}${unit} / ${formattedTotal}${unit}`}
         </span>
       </div>
-      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary/40 backdrop-blur-sm dark:bg-secondary/30">
+      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary/40 backdrop-blur-sm">
         <div 
           className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} ${colorTheme.glow} rounded-full`}
-          style={{ width: isUnconfigured ? "0%" : `${percent}%` }}
+          style={progressStyle}
         >
           <div className="absolute inset-0 bg-white/20 rounded-full opacity-0"></div>
         </div>

@@ -1,52 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { config } from '@/lib/config';
 import { Moon, Sun } from 'lucide-react';
-import Image from 'next/image';
+import { useTheme } from 'next-themes';
 
 export const Navbar: React.FC = React.memo(function Navbar() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = (savedTheme as 'light' | 'dark') || (prefersDark ? 'dark' : 'light');
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-  }, []);
+  const { resolvedTheme, setTheme } = useTheme();
   
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
   
-  const themeToggle = mounted ? (
-    <button
-      type="button"
-      aria-label={theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border"
-      onClick={toggleTheme}
-    >
-      {theme === 'dark' ? (
-        <Sun className="h-5 w-5" />
-      ) : (
-        <Moon className="h-5 w-5" />
-      )}
-      <span className="sr-only">
-        {theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
-      </span>
-    </button>
-  ) : (
-    <div className="h-9 w-9"></div> 
-  );
-  
   return (
-    <header className="sticky top-0 z-50 border-b bg-background">
+    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
       <div className="flex h-14 items-center justify-center">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-2 font-bold" suppressHydrationWarning>
@@ -56,25 +23,23 @@ export const Navbar: React.FC = React.memo(function Navbar() {
           </div>
           
           <div className="flex items-center space-x-2">
-            <a
-              href="https://github.com/Yuri-NagaSaki/ServerSentry"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md border"
-            >
-              <Image
-                src={theme === 'dark' ? '/github-mark-white.svg' : '/github-mark.svg'}
-                alt=""
-                width={20}
-                height={20}
-                className="opacity-87"
-              />
-              <span className="sr-only">访问GitHub仓库</span>
-            </a>
+            <GitHubLink />
             
-            <div suppressHydrationWarning>
-              {themeToggle}
-            </div>
+            <button
+              type="button"
+              aria-label={resolvedTheme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors hover:bg-secondary/50"
+              onClick={toggleTheme}
+            >
+              {resolvedTheme === 'dark' ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+              <span className="sr-only">
+                {resolvedTheme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -82,4 +47,25 @@ export const Navbar: React.FC = React.memo(function Navbar() {
   );
 });
 
-Navbar.displayName = 'Navbar'; 
+Navbar.displayName = 'Navbar';
+
+// 独立的GitHub链接组件，避免主题切换时重新渲染
+const GitHubLink = React.memo(function GitHubLink() {
+  return (
+    <a
+      href="https://github.com/Yuri-NagaSaki/ServerSentry"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors hover:bg-secondary/50"
+    >
+      <svg
+        className="h-5 w-5 fill-current"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+      </svg>
+      <span className="sr-only">访问GitHub仓库</span>
+    </a>
+  );
+}); 
