@@ -11,18 +11,31 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { dev, isServer }) => {
     if (!dev && !isServer) {
-      // 减少polyfill包大小
+      // 完全禁用polyfill
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        'core-js': false,
+        'regenerator-runtime': false,
+        'es6-promise': false,
+        'whatwg-fetch': false,
+      };
+      
+      // 移除polyfill别名
       config.resolve.alias = {
         ...config.resolve.alias,
         'core-js/stable': false,
         'regenerator-runtime/runtime': false,
+        'core-js/features': false,
+        'core-js/es': false,
+        'core-js/web': false,
       };
       
-      // 优化现代浏览器
+      // 现代浏览器优化
       config.optimization = {
         ...config.optimization,
         usedExports: true,
         sideEffects: false,
+        minimize: true,
       };
     }
     return config;
