@@ -19,7 +19,7 @@ interface ServerCardProps {
   server: Server;
 }
 
-export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
+export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerCard({ server }) {
   const isOnline = server.online4 || server.online6;
   
   // SWAP特殊处理
@@ -119,32 +119,42 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
       </Card>
     </div>
   );
-};
+});
+ServerCard.displayName = 'ServerCard';
 
 // 运行时间显示组件
-const UptimeDisplay: React.FC<{ uptime: string }> = ({ uptime }) => (
-  <div className="flex items-center space-x-1 flex-shrink-0 text-muted-foreground text-xs whitespace-nowrap">
-    <Clock className="h-3.5 w-3.5" />
-    <span className="whitespace-nowrap" suppressHydrationWarning>运行: {uptime}</span>
-  </div>
-);
+const UptimeDisplay: React.FC<{ uptime: string }> = React.memo(function UptimeDisplay({ uptime }) {
+  return (
+    <div className="flex items-center space-x-1 flex-shrink-0 text-muted-foreground text-xs whitespace-nowrap">
+      <Clock className="h-3.5 w-3.5" />
+      <span className="whitespace-nowrap" suppressHydrationWarning>运行: {uptime}</span>
+    </div>
+  );
+});
+UptimeDisplay.displayName = 'UptimeDisplay';
 
 // 服务器类型标签
-const ServerTypeTag: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex-shrink-0">
-    <div className="flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
-      <ServerIcon className="h-3 w-3 mr-0.5 text-muted-foreground flex-shrink-0" />
-      <span suppressHydrationWarning>{label}</span>
+const ServerTypeTag: React.FC<{ label: string }> = React.memo(function ServerTypeTag({ label }) {
+  return (
+    <div className="flex-shrink-0">
+      <div className="flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
+        <ServerIcon className="h-3 w-3 mr-0.5 text-muted-foreground flex-shrink-0" />
+        <span suppressHydrationWarning>{label}</span>
+      </div>
     </div>
-  </div>
-);
+  );
+});
+ServerTypeTag.displayName = 'ServerTypeTag';
 
 // 位置标签
-const LocationTag: React.FC<{ label: string }> = ({ label }) => (
-  <div className="flex-shrink-0">
-    <div className="flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
-      <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground flex-shrink-0" />
-      <span suppressHydrationWarning>{label}</span>
+const LocationTag: React.FC<{ label: string }> = React.memo(function LocationTag({ label }) {
+  return (
+    <div className="flex-shrink-0">
+      <div className="flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 dark:bg-secondary/30 text-foreground/80 whitespace-nowrap">
+        <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground flex-shrink-0" />
+        <span suppressHydrationWarning>{label}</span>
+      </div>
     </div>
-  </div>
-); 
+  );
+});
+LocationTag.displayName = 'LocationTag'; 

@@ -92,6 +92,7 @@
     font-family: 'HarmonyOS Sans SC', ui-sans-serif, system-ui, -apple-system, sans-serif;
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
+    background-color: var(--background);
   }
   
   /* macOS 特定优化 */
@@ -103,6 +104,7 @@
   
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
   }
   
   body {
@@ -112,6 +114,9 @@
     -moz-osx-font-smoothing: grayscale;
     transform: translateZ(0);
     backface-visibility: hidden;
+    will-change: auto;
+    contain: layout style paint;
+    background-color: var(--background);
   }
   
   .server-metric-progress {
@@ -142,5 +147,6 @@
   * {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    box-sizing: border-box;
   }
 }

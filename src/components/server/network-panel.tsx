@@ -31,22 +31,18 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = ({
     </div>
     
     <div className="space-y-1.5">
-      <div className="grid grid-cols-[auto_1fr] items-center gap-1">
-        <div className="flex items-center space-x-1">
-          <NetworkArrow direction="down" />
-          <span className="text-xs font-medium">下载</span>
-        </div>
-        <span className="text-xs font-medium text-muted-foreground text-right" suppressHydrationWarning>
+      <div className="flex items-center min-h-[18px] text-xs">
+        <NetworkArrow direction="down" />
+        <span className="font-medium ml-1 w-6 flex-shrink-0">下载</span>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
           {formatSpeed(downloadSpeed, 1)}
         </span>
       </div>
       
-      <div className="grid grid-cols-[auto_1fr] items-center gap-1">
-        <div className="flex items-center space-x-1">
-          <NetworkArrow direction="up" />
-          <span className="text-xs font-medium">上传</span>
-        </div>
-        <span className="text-xs font-medium text-muted-foreground text-right" suppressHydrationWarning>
+      <div className="flex items-center min-h-[18px] text-xs">
+        <NetworkArrow direction="up" />
+        <span className="font-medium ml-1 w-6 flex-shrink-0">上传</span>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
           {formatSpeed(uploadSpeed, 1)}
         </span>
       </div>
@@ -71,22 +67,18 @@ export const TotalTrafficPanel: React.FC<TotalTrafficPanelProps> = ({
     </div>
     
     <div className="space-y-1.5">
-      <div className="grid grid-cols-[auto_1fr] items-center gap-1">
-        <div className="flex items-center space-x-1">
-          <span className="text-sm flex-shrink-0 text-muted-foreground">↓</span>
-          <span className="text-xs font-medium">接收</span>
-        </div>
-        <span className="text-xs font-medium text-muted-foreground text-right" suppressHydrationWarning>
+      <div className="flex items-center min-h-[18px] text-xs">
+        <span className="text-sm flex-shrink-0 text-muted-foreground">↓</span>
+        <span className="font-medium ml-1 w-6 flex-shrink-0">接收</span>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
           {formatBytes(totalDownload, 1)}
         </span>
       </div>
       
-      <div className="grid grid-cols-[auto_1fr] items-center gap-1">
-        <div className="flex items-center space-x-1">
-          <span className="text-sm flex-shrink-0 text-muted-foreground">↑</span>
-          <span className="text-xs font-medium">发送</span>
-        </div>
-        <span className="text-xs font-medium text-muted-foreground text-right" suppressHydrationWarning>
+      <div className="flex items-center min-h-[18px] text-xs">
+        <span className="text-sm flex-shrink-0 text-muted-foreground">↑</span>
+        <span className="font-medium ml-1 w-6 flex-shrink-0">发送</span>
+        <span className="font-medium text-muted-foreground font-mono whitespace-nowrap ml-auto" suppressHydrationWarning>
           {formatBytes(totalUpload, 1)}
         </span>
       </div>

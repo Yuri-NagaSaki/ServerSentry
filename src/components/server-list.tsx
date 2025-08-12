@@ -4,7 +4,9 @@ import React from 'react';
 import { useServers } from '@/hooks/use-servers';
 import { ServerCard } from './server-card';
 
-export const ServerList: React.FC = () => {
+import { Server } from '@/lib/api';
+
+export const ServerList: React.FC = React.memo(function ServerList() {
   const { data } = useServers();
   
   const sortedServers = React.useMemo(() => {
@@ -30,13 +32,7 @@ export const ServerList: React.FC = () => {
   
   if (!data?.servers) {
     return (
-      <div 
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6"
-        style={{
-          contain: 'layout style',
-          contentVisibility: 'auto'
-        }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
         {Array(8).fill(null).map((_, i) => (
           <div key={i} className="h-[300px] bg-muted/10 rounded-lg" />
         ))}
@@ -45,18 +41,21 @@ export const ServerList: React.FC = () => {
   }
   
   return (
-    <div 
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6"
-      style={{
-        contain: 'layout style',
-        contentVisibility: 'auto'
-      }}
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
       {sortedServers.map((server) => (
-        <div key={server.name} className="h-full">
-          <ServerCard server={server} />
-        </div>
+        <ServerCardItem key={server.name} server={server} />
       ))}
     </div>
   );
-}; 
+});
+ServerList.displayName = 'ServerList';
+
+// ServerCardItem 组件，避免重复渲染
+const ServerCardItem: React.FC<{ server: Server }> = React.memo(function ServerCardItem({ server }) {
+  return (
+    <div className="h-full">
+      <ServerCard server={server} />
+    </div>
+  );
+});
+ServerCardItem.displayName = 'ServerCardItem'; 

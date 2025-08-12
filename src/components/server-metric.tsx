@@ -34,13 +34,13 @@ const colors = {
   }
 };
 
-export const ServerMetric: React.FC<ServerMetricProps> = ({
+export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function ServerMetric({
   label,
   value,
   total,
   unit = '',
-  formatter = (val) => val.toString(),
-}) => {
+  formatter = (val: number) => val.toString(),
+}) {
   const percent = formatPercent(value, total);
   const formattedValue = formatter(value);
   const formattedTotal = formatter(total);
@@ -48,8 +48,8 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
   // 检查未配置状态（例如SWAP为0）
   const isUnconfigured = formattedValue === "未配置";
   
-  // 根据百分比确定颜色主题
-  const getColorTheme = (percent: number) => {
+  // 根据百分比确定颜色主题 - 使用 useMemo 缓存计算
+  const colorTheme = React.useMemo(() => {
     if (isUnconfigured) {
       return colors.disabled;
     } else if (percent >= 90) {
@@ -59,9 +59,7 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
     } else {
       return colors.safe;
     }
-  };
-  
-  const colorTheme = getColorTheme(percent);
+  }, [percent, isUnconfigured]);
   
   return (
     <div className="space-y-2">
@@ -91,4 +89,5 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
       </div>
     </div>
   );
-}; 
+});
+ServerMetric.displayName = 'ServerMetric'; 

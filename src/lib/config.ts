@@ -9,9 +9,9 @@ export const config = {
   apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
   
   /**
-   * 数据刷新间隔（毫秒）
+   * 数据刷新间隔（毫秒）- 降低刷新频率以减少CPU负载
    */
-  refreshInterval: 1000,
+  refreshInterval: 2000,
   
   /**
    * 网站标题

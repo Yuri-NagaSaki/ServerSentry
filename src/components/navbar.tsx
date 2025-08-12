@@ -5,7 +5,7 @@ import { config } from '@/lib/config';
 import { Moon, Sun } from 'lucide-react';
 import Image from 'next/image';
 
-export const Navbar: React.FC = () => {
+export const Navbar: React.FC = React.memo(function Navbar() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mounted, setMounted] = useState(false);
   
@@ -80,4 +80,6 @@ export const Navbar: React.FC = () => {
       </div>
     </header>
   );
-}; 
+});
+
+Navbar.displayName = 'Navbar'; 
