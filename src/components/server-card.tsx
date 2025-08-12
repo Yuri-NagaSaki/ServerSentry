@@ -33,7 +33,7 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
   
   return (
     <div className="h-full">
-      <Card className="overflow-hidden relative border shadow-sm h-full bg-card">
+      <Card className="overflow-hidden relative border shadow-sm h-full bg-card transform-gpu">
         {/* 卡片内部容器 */}
         <div className="relative z-10 h-full flex flex-col">
           <CardHeader className="pb-2 space-y-2">

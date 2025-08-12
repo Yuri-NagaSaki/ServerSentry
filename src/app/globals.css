@@ -93,6 +93,8 @@
     scroll-behavior: auto;
     -webkit-overflow-scrolling: touch;
     background-color: var(--background);
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   
   /* macOS 特定优化 */
@@ -112,11 +114,8 @@
     overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    will-change: auto;
-    contain: layout style paint;
     background-color: var(--background);
+    will-change: scroll-position;
   }
   
   .server-metric-progress {
@@ -148,5 +147,12 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     box-sizing: border-box;
+  }
+  
+  /* GPU加速优化类 */
+  .transform-gpu {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
   }
 }

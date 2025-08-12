@@ -32,16 +32,16 @@ export const ServerList: React.FC = React.memo(function ServerList() {
   
   if (!data?.servers) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 transform-gpu">
         {Array(8).fill(null).map((_, i) => (
-          <div key={i} className="h-[300px] bg-muted/10 rounded-lg" />
+          <div key={i} className="h-[300px] bg-muted/10 rounded-lg transform-gpu" />
         ))}
       </div>
     );
   }
   
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 transform-gpu">
       {sortedServers.map((server) => (
         <ServerCardItem key={server.name} server={server} />
       ))}
