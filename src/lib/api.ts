@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { config } from './config';
 
 // 定义服务器类型
@@ -53,20 +52,29 @@ export interface StatsResponse {
 }
 
 /**
- * 创建API客户端
- */
-const apiClient = axios.create({
-  baseURL: config.apiUrl,
-  timeout: 10000,
-});
-
-/**
- * 获取所有服务器状态
+ * 获取所有服务器状态 - 使用原生fetch
  */
 export const getServersStatus = async (): Promise<StatsResponse> => {
   try {
-    const response = await apiClient.get<StatsResponse>('');
-    return response.data;
+    const response = await fetch(config.apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      },
+      // Next.js fetch 缓存配置
+      next: { 
+        revalidate: 1 // 1秒缓存
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('获取服务器状态失败:', error);
     throw error;
@@ -74,22 +82,29 @@ export const getServersStatus = async (): Promise<StatsResponse> => {
 };
 
 /**
- * 格式化流量数据 (bytes -> human readable)
+ * 格式化流量数据 - 使用原生Intl.NumberFormat
  * @param bytes 字节数
+ * @param decimals 小数位数
  * @returns 格式化后的流量
  */
-export const formatBytes = (bytes: number, decimals = 2): string => {
+export const formatBytes = (bytes: number, decimals = 1): string => {
   if (bytes === 0) return '0 B';
   
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const value = bytes / Math.pow(k, i);
   
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+  const formatter = new Intl.NumberFormat('zh-CN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals
+  });
+  
+  return `${formatter.format(value)} ${sizes[i]}`;
 };
 
 /**
- * 格式化百分比
+ * 格式化百分比 - 使用原生Intl.NumberFormat
  * @param value 值
  * @param total 总量
  * @returns 格式化后的百分比
@@ -100,18 +115,25 @@ export const formatPercent = (value: number, total: number): number => {
 };
 
 /**
- * 格式化网络速率数据 (bytes -> human readable)
+ * 格式化网络速率数据 - 使用原生Intl.NumberFormat
  * @param bytes 字节数
+ * @param decimals 小数位数
  * @returns 格式化后的速率
  */
-export const formatSpeed = (bytes: number, decimals = 2): string => {
+export const formatSpeed = (bytes: number, decimals = 1): string => {
   if (bytes === 0) return '0 B/s';
   
   const k = 1024;
-  const sizes = ['B/s', 'K/s', 'M/s', 'G/s', 'T/s'];
+  const sizes = ['B/s', 'K/s', 'M/s', 'G/s', 'T/s', 'P/s', 'E/s', 'Z/s', 'Y/s'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const value = bytes / Math.pow(k, i);
   
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+  const formatter = new Intl.NumberFormat('zh-CN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals
+  });
+  
+  return `${formatter.format(value)} ${sizes[i]}`;
 };
 
 /**
