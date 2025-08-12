@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import '../styles/fonts.css';
-@import '../styles/background.css';
-@import '../styles/performance.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,33 +12,15 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
   --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --radius-sm: calc(var(--radius) - 4px);
@@ -50,189 +30,66 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.5rem;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --primary: #171717;
+  --primary-foreground: #fafafa;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #171717;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #171717;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #0a0a0a;
+  --card-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #fafafa;
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1aa;
+  --border: #262626;
+  --input: #262626;
+  --ring: #d4d4d8;
 }
 
-/* 定义亮色和暗色主题下固定的彩色值，确保它们在两种模式下都明亮可见 */
-:root, .dark {
-  /* 使用HSL格式的颜色值，确保良好的颜色呈现 */
-  --color-green: hsl(142, 76%, 50%);
-  --color-blue: hsl(213, 94%, 68%);
-  --color-amber: hsl(32, 95%, 55%);
-  --color-red: hsl(0, 84%, 60%);
-  --color-purple: hsl(262, 83%, 68%);
-  
-  /* 确保这些颜色在暗色模式下不会变暗 */
-  --color-background-dark: hsl(0, 0%, 13%);
-  --color-background-light: hsl(0, 0%, 100%);
-  
-  /* 确保面板的透明度不会导致颜色问题 */
-  --panel-bg-light: hsla(0, 0%, 100%, 0.7);
-  --panel-bg-dark: hsla(0, 0%, 15%, 0.7);
-}
-
-/* 自定义的颜色类，确保在暗色模式下保持鲜明 */
+/* 基础状态颜色 */
 .text-success {
-  color: var(--color-green);
-}
-
-.text-info {
-  color: var(--color-blue);
+  color: #22c55e;
 }
 
 .text-warning {
-  color: var(--color-amber);
+  color: #f59e0b;
 }
 
 .text-danger {
-  color: var(--color-red);
+  color: #ef4444;
 }
 
 .bg-success {
-  background-color: var(--color-green);
-}
-
-.bg-info {
-  background-color: var(--color-blue);
+  background-color: #22c55e;
 }
 
 .bg-warning {
-  background-color: var(--color-amber);
+  background-color: #f59e0b;
 }
 
 .bg-danger {
-  background-color: var(--color-red);
-}
-
-/* TailwindCSS原生颜色类在暗色模式下加强 */
-.dark .text-emerald-500 {
-  color: var(--color-green);
-}
-
-.dark .text-blue-500 {
-  color: var(--color-blue);
-}
-
-.dark .text-amber-500 {
-  color: var(--color-amber);
-}
-
-.dark .text-red-500 {
-  color: var(--color-red);
-}
-
-.dark .text-purple-500 {
-  color: var(--color-purple);
-}
-
-.dark .bg-emerald-500 {
-  background-color: var(--color-green);
-}
-
-.dark .bg-blue-500 {
-  background-color: var(--color-blue);
-}
-
-.dark .bg-amber-500 {
-  background-color: var(--color-amber);
-}
-
-.dark .bg-red-500 {
-  background-color: var(--color-red);
-}
-
-.dark .bg-purple-500 {
-  background-color: var(--color-purple);
-}
-
-/* 确保进度条在暗色模式下的视觉效果 */
-.dark .server-metric-progress {
-  background-color: hsla(0, 0%, 25%, 0.5);
-}
-
-.dark .server-metric-progress-bar.success {
-  background-color: var(--color-green);
-}
-
-.dark .server-metric-progress-bar.warning {
-  background-color: var(--color-amber);
-}
-
-.dark .server-metric-progress-bar.danger {
-  background-color: var(--color-red);
+  background-color: #ef4444;
 }
 
 @layer base {
   html {
     font-family: 'HarmonyOS Sans SC', ui-sans-serif, system-ui, -apple-system, sans-serif;
-    /* macOS 滑动优化 */
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
   }
   
   * {
@@ -241,88 +98,43 @@
   
   body {
     @apply bg-background text-foreground;
-    /* 防止过度滚动 */
-    overscroll-behavior: none;
-    /* 启用硬件加速 */
-    transform: translate3d(0, 0, 0);
-    /* 优化滚动 */
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* 全局性能优化 */
-  * {
-    /* 减少重排重绘 */
-    box-sizing: border-box;
-  }
-  
-  /* 主容器优化 */
-  .main-container {
-    /* GPU 加速 */
-    transform: translate3d(0, 0, 0);
-    will-change: scroll-position;
-    /* 优化渲染 */
-    contain: layout style;
-    /* 平滑滚动 */
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
   }
   
   .server-metric-progress {
     @apply relative h-2 w-full overflow-hidden rounded-full bg-secondary;
-    /* 进度条优化 */
-    transform: translate3d(0, 0, 0);
-    contain: layout style paint;
   }
 
   .server-metric-progress-bar {
     @apply absolute left-0 top-0 h-full rounded-full;
-    /* GPU 加速动画 */
-    will-change: width;
-    transform: translate3d(0, 0, 0);
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .server-metric-progress-bar.success {
-    @apply bg-green-500;
+    background-color: #22c55e;
   }
 
   .server-metric-progress-bar.warning {
-    @apply bg-yellow-500;
+    background-color: #f59e0b;
   }
 
   .server-metric-progress-bar.danger {
-    @apply bg-destructive;
+    background-color: #ef4444;
   }
   
-  /* 优化滚动条样式 */
+  /* 简化滚动条 */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   
   ::-webkit-scrollbar-track {
     @apply bg-muted;
-    border-radius: 3px;
   }
   
   ::-webkit-scrollbar-thumb {
     @apply bg-muted-foreground/40 rounded-full;
-    /* GPU 加速 */
-    transform: translate3d(0, 0, 0);
   }
   
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/60;
-  }
-  
-  /* 隐藏滚动条但保持功能 */
-  .scrollbar-none {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
   }
 }

@@ -11,9 +11,7 @@ interface ServerInfoProps {
 }
 
 export const ServerName: React.FC<{ name: string }> = ({ name }) => (
-  <div 
-    className="flex items-center gap-1.5 min-w-0 max-w-full hover:translate-x-0.5 transition-transform duration-200"
-  >
+  <div className="flex items-center gap-1.5 min-w-0 max-w-full">
     <span className="text-xl truncate flex-shrink" suppressHydrationWarning>
       {name}
     </span>
@@ -31,7 +29,7 @@ export const ServerTag: React.FC<{ label: string }> = ({ label }) => (
   <div className="flex-shrink-0">
     <Badge 
       variant="outline" 
-      className="h-5 px-1 text-[10px] font-normal bg-background/50 dark:bg-background/30 whitespace-nowrap hover:bg-background/70 transition-colors duration-200" 
+      className="h-5 px-1 text-[10px] font-normal bg-background/50 dark:bg-background/30 whitespace-nowrap" 
       suppressHydrationWarning
     >
       {label}

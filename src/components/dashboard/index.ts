@@ -1,4 +1,3 @@
-export * from './colors';
 export * from './icon-container';
 export * from './stat-value';
 export * from './traffic-components';

@@ -3,24 +3,16 @@
 import React from 'react';
 import { Wifi, HardDrive } from 'lucide-react';
 import { formatBytes, formatSpeed } from '@/lib/api';
-import { serverColors } from './colors';
 
 interface NetworkArrowProps {
   direction: 'up' | 'down';
 }
 
-const NetworkArrow: React.FC<NetworkArrowProps> = ({ direction }) => {
-  const color = direction === 'down' ? serverColors.download : serverColors.upload;
-  
-  return (
-    <span 
-      className="text-sm flex-shrink-0"
-      style={{ color }}
-    >
-      {direction === 'down' ? '↓' : '↑'}
-    </span>
-  );
-};
+const NetworkArrow: React.FC<NetworkArrowProps> = ({ direction }) => (
+  <span className="text-sm flex-shrink-0 text-muted-foreground">
+    {direction === 'down' ? '↓' : '↑'}
+  </span>
+);
 
 // 实时网络面板
 interface RealTimeNetworkPanelProps {
@@ -32,9 +24,7 @@ export const RealTimeNetworkPanel: React.FC<RealTimeNetworkPanelProps> = ({
   downloadSpeed, 
   uploadSpeed 
 }) => (
-  <div 
-    className="p-2.5 rounded-xl bg-secondary/20 backdrop-blur-sm dark:bg-secondary/30 h-full hover:scale-[1.02] hover:bg-secondary/25 transition-all duration-200"
-  >
+  <div className="p-2.5 rounded-xl bg-secondary h-full">
     <div className="flex items-center space-x-1.5 mb-1.5">
       <Wifi className="h-3.5 w-3.5 text-muted-foreground" />
       <span className="text-xs font-medium">实时网络</span>
@@ -74,9 +64,7 @@ export const TotalTrafficPanel: React.FC<TotalTrafficPanelProps> = ({
   totalDownload,
   totalUpload
 }) => (
-  <div 
-    className="p-2.5 rounded-xl bg-secondary/20 backdrop-blur-sm dark:bg-secondary/30 h-full hover:scale-[1.02] hover:bg-secondary/25 transition-all duration-200"
-  >
+  <div className="p-2.5 rounded-xl bg-secondary h-full">
     <div className="flex items-center space-x-1.5 mb-1.5">
       <HardDrive className="h-3.5 w-3.5 text-muted-foreground" />
       <span className="text-xs font-medium">总流量</span>
@@ -85,7 +73,7 @@ export const TotalTrafficPanel: React.FC<TotalTrafficPanelProps> = ({
     <div className="space-y-1.5">
       <div className="grid grid-cols-[auto_1fr] items-center gap-1">
         <div className="flex items-center space-x-1">
-          <span className="text-sm flex-shrink-0" style={{ color: serverColors.download }}>↓</span>
+          <span className="text-sm flex-shrink-0 text-muted-foreground">↓</span>
           <span className="text-xs font-medium">接收</span>
         </div>
         <span className="text-xs font-medium text-muted-foreground text-right" suppressHydrationWarning>
@@ -95,7 +83,7 @@ export const TotalTrafficPanel: React.FC<TotalTrafficPanelProps> = ({
       
       <div className="grid grid-cols-[auto_1fr] items-center gap-1">
         <div className="flex items-center space-x-1">
-          <span className="text-sm flex-shrink-0" style={{ color: serverColors.upload }}>↑</span>
+          <span className="text-sm flex-shrink-0 text-muted-foreground">↑</span>
           <span className="text-xs font-medium">发送</span>
         </div>
         <span className="text-xs font-medium text-muted-foreground text-right" suppressHydrationWarning>

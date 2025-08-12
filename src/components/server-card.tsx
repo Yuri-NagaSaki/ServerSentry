@@ -32,39 +32,31 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
   };
   
   return (
-    <div className="h-full card-optimized hover-optimized">
-      <Card className="overflow-hidden relative backdrop-blur-sm border-none bg-gradient-to-br from-background/70 to-background/30 shadow-xl h-full hover:shadow-2xl transition-all duration-300 backdrop-optimized">
-        {/* 背景荧光效果 */}
-        <div className="absolute -z-10 inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 dark:from-primary/10 dark:to-primary/10 background-optimized"></div>
-        
-        {/* 悬停光晕效果 */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent dark:from-primary/15 dark:via-primary/10 dark:to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 gpu-accelerated"
-        />
-        
+    <div className="h-full">
+      <Card className="overflow-hidden relative border shadow-sm h-full bg-card">
         {/* 卡片内部容器 */}
-        <div className="relative z-10 h-full flex flex-col hover:translate-y-[-2px] transition-transform duration-300 layout-optimized">
+        <div className="relative z-10 h-full flex flex-col">
           <CardHeader className="pb-2 space-y-2">
             {/* 服务器名称和状态 */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 min-w-0 max-w-[70%]">
                 <StatusIndicator isOnline={isOnline} />
-                <span className="text-xl truncate text-optimized" suppressHydrationWarning>
+                <span className="text-xl truncate" suppressHydrationWarning>
                   {server.alias || server.name}
                 </span>
               </div>
               <StatusBadge isOnline={isOnline} />
             </div>
             
-            {/* 服务器信息和网络类型 - 重构布局，确保标签始终在同一行 */}
+            {/* 服务器信息和网络类型 */}
             <div className="flex items-center justify-between">
               {/* 左侧：运行时间信息 */}
               <div className="flex-shrink-0">
                 <UptimeDisplay uptime={server.uptime} />
               </div>
               
-              {/* 右侧：IP状态、服务器类型和位置标签 - 使用nowrap确保不换行 */}
-              <div className="flex items-center gap-0.5 flex-shrink-0 overflow-x-auto whitespace-nowrap scrollbar-none smooth-scroll">
+              {/* 右侧：IP状态、服务器类型和位置标签 */}
+              <div className="flex items-center gap-0.5 flex-shrink-0 overflow-x-auto whitespace-nowrap">
                 {/* IP状态标签 */}
                 <IPStatusBadges 
                   ipv4Online={server.online4}
@@ -80,46 +72,38 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server }) => {
             </div>
           </CardHeader>
           
-          <CardContent className="space-y-4 pt-0 flex-grow flex flex-col layout-optimized">
+          <CardContent className="space-y-4 pt-0 flex-grow flex flex-col">
             <div className="space-y-3">
-              <div className="hover:scale-[1.01] transition-transform duration-200 hover-optimized">
-                <ServerMetric 
-                  label="CPU"
-                  value={server.cpu}
-                  total={100}
-                  unit="%"
-                />
-              </div>
+              <ServerMetric 
+                label="CPU"
+                value={server.cpu}
+                total={100}
+                unit="%"
+              />
               
-              <div className="hover:scale-[1.01] transition-transform duration-200 hover-optimized">
-                <ServerMetric 
-                  label="内存"
-                  value={server.memory_used}
-                  total={server.memory_total}
-                  formatter={(val) => formatBytes(val * 1024)}
-                />
-              </div>
+              <ServerMetric 
+                label="内存"
+                value={server.memory_used}
+                total={server.memory_total}
+                formatter={(val) => formatBytes(val * 1024)}
+              />
               
-              <div className="hover:scale-[1.01] transition-transform duration-200 hover-optimized">
-                <ServerMetric 
-                  label="硬盘"
-                  value={server.hdd_used}
-                  total={server.hdd_total}
-                  formatter={(val) => formatBytes(val * 1024 * 1024)}
-                />
-              </div>
+              <ServerMetric 
+                label="硬盘"
+                value={server.hdd_used}
+                total={server.hdd_total}
+                formatter={(val) => formatBytes(val * 1024 * 1024)}
+              />
               
-              <div className="hover:scale-[1.01] transition-transform duration-200 hover-optimized">
-                <ServerMetric 
-                  label="SWAP"
-                  value={server.swap_used}
-                  total={server.swap_total || 1}
-                  formatter={swapFormatter}
-                />
-              </div>
+              <ServerMetric 
+                label="SWAP"
+                value={server.swap_used}
+                total={server.swap_total || 1}
+                formatter={swapFormatter}
+              />
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 mt-auto grid-optimized">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 mt-auto">
               <RealTimeNetworkPanel
                 downloadSpeed={server.network_rx}
                 uploadSpeed={server.network_tx}

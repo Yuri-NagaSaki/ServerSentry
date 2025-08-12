@@ -8,7 +8,7 @@ interface StatusBadgeProps {
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ isOnline }) => (
-  <div className="hover:scale-105 transition-transform duration-300">
+  <div>
     <Badge 
       variant={isOnline ? 'success' : 'offline'}
       className="flex-shrink-0 ml-2"

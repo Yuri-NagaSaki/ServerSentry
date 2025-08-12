@@ -6,7 +6,6 @@ import { Cpu, Server, HardDrive, Wifi } from 'lucide-react';
 import { formatDateTime } from '@/lib/utils';
 
 import {
-  cardColors,
   StatCard,
   StatsSkeletons,
   LastUpdated,
@@ -90,7 +89,7 @@ export const DashboardStats: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 
-          className="text-3xl font-bold tracking-tight hover:scale-[1.01] transition-transform duration-200" 
+          className="text-3xl font-bold tracking-tight" 
           suppressHydrationWarning
         >
           监控概览
@@ -102,7 +101,6 @@ export const DashboardStats: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="服务器"
-          accentColor={cardColors.servers}
           value={
             <div className="flex items-baseline">
               <span className="text-2xl font-bold">{stats.onlineServers}</span>
@@ -114,7 +112,6 @@ export const DashboardStats: React.FC = () => {
         />
         <StatCard
           title="平均CPU使用率"
-          accentColor={cardColors.cpu}
           value={
             <div className="flex items-baseline">
               <span className="text-2xl font-bold">{stats.avgCpuUsage}</span>
@@ -125,7 +122,6 @@ export const DashboardStats: React.FC = () => {
         />
         <StatCard
           title="平均内存使用率"
-          accentColor={cardColors.memory}
           value={
             <div className="flex items-baseline">
               <span className="text-2xl font-bold">{stats.avgMemoryUsage}</span>
@@ -136,13 +132,10 @@ export const DashboardStats: React.FC = () => {
         />
         <StatCard
           title="总流量"
-          accentColor={cardColors.network}
           value={
             <TrafficDisplay 
               download={stats.totalDownload}
               upload={stats.totalUpload}
-              downloadColor={cardColors.servers}
-              uploadColor={cardColors.memory}
             />
           }
           icon={<Wifi className="h-6 w-6" />}

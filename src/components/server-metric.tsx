@@ -83,10 +83,10 @@ export const ServerMetric: React.FC<ServerMetricProps> = ({
       </div>
       <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary/40 backdrop-blur-sm dark:bg-secondary/30">
         <div 
-          className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} ${colorTheme.glow} rounded-full transition-all duration-800 ease-out`}
+          className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} ${colorTheme.glow} rounded-full`}
           style={{ width: isUnconfigured ? "0%" : `${percent}%` }}
         >
-          <div className="absolute inset-0 bg-white/20 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-white/20 rounded-full opacity-0"></div>
         </div>
       </div>
     </div>
