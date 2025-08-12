@@ -35,6 +35,6 @@ const IPBadge: React.FC<IPBadgeProps> = ({ protocol, isOnline }) => (
         isOnline ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-400 hover:bg-gray-300'
       }`}
     />
-    <span suppressHydrationWarning>IP{protocol}</span>
+    <span suppressHydrationWarning>{protocol.toUpperCase()}</span>
   </span>
 ); 

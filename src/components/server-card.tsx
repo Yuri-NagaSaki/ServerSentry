@@ -49,7 +49,7 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
         <div className="flex items-center justify-between">
           <UptimeDisplay uptime={server.uptime} />
           
-          <div className="flex items-center gap-0.5 overflow-x-auto whitespace-nowrap">
+          <div className="flex items-center gap-0.5 overflow-hidden">
             <IPStatusBadges 
               ipv4Online={server.online4}
               ipv6Online={server.online6}
