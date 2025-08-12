@@ -6,6 +6,27 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // 减少polyfill包大小
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'core-js/stable': false,
+        'regenerator-runtime/runtime': false,
+      };
+      
+      // 优化现代浏览器
+      config.optimization = {
+        ...config.optimization,
+        usedExports: true,
+        sideEffects: false,
+      };
+    }
+    return config;
+  },
   async rewrites() {
     return [
       {
