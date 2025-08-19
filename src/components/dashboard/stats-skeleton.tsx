@@ -7,7 +7,7 @@ export const StatsSkeletons: React.FC = () => (
     {Array(4).fill(null).map((_, i) => (
       <div 
         key={i} 
-        className="h-[104px] bg-secondary/30 backdrop-blur-sm rounded-xl skeleton"
+        className="h-[104px] glass-light rounded-xl skeleton"
         style={{ animationDelay: `${i * 100}ms` }}
       />
     ))}

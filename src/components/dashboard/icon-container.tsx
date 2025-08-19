@@ -9,7 +9,7 @@ export interface IconContainerProps {
 
 export const IconContainer: React.FC<IconContainerProps> = ({ accentColor, icon }) => (
   <div 
-    className="p-3 rounded-xl backdrop-blur-sm shadow-inner mr-4 relative overflow-hidden"
+    className="p-3 rounded-xl glass-light shadow-inner mr-4 relative overflow-hidden"
     style={{ backgroundColor: `${accentColor}15` }}
   >
     <div

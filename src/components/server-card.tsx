@@ -38,7 +38,7 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
   const diskFormatter = React.useCallback((val: number) => formatBytes(val * 1024 * 1024), []);
   
   return (
-    <div className="h-full server-card bg-card rounded-xl border shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] hover:border-border/80 cursor-pointer">
+    <div className="h-full server-card card-glass glass-hover rounded-xl overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] cursor-pointer">
       {/* 服务器信息头部 */}
       <ServerCardHeader 
         server={server}

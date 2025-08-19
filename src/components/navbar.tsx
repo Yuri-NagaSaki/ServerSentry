@@ -32,7 +32,7 @@ export const Navbar: React.FC = React.memo(function Navbar() {
   // 防止水合错误，在mounted之前不显示主题按钮
   if (!mounted) {
     return (
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 navbar-glass">
         <div className="flex h-14 items-center justify-center">
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div className="flex items-center space-x-2 font-bold">
@@ -52,7 +52,7 @@ export const Navbar: React.FC = React.memo(function Navbar() {
   }
   
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 navbar-glass">
       <div className="flex h-14 items-center justify-center">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-2 font-bold" suppressHydrationWarning>
@@ -67,7 +67,7 @@ export const Navbar: React.FC = React.memo(function Navbar() {
             <button
               type="button"
               aria-label={theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors hover:bg-secondary/50"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md glass-light transition-colors hover:bg-secondary/50"
               onClick={toggleTheme}
             >
               {theme === 'dark' ? (
@@ -95,7 +95,7 @@ const GitHubLink = React.memo(function GitHubLink() {
       href="https://github.com/Yuri-NagaSaki/ServerSentry"
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors hover:bg-secondary/50"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-md glass-light transition-colors hover:bg-secondary/50"
     >
       <svg
         className="h-5 w-5 fill-current"
