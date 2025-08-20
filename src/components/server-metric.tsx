@@ -84,12 +84,12 @@ export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function Ser
           {isUnconfigured ? "未配置" : `${formattedValue}${unit} / ${formattedTotal}${unit}`}
         </span>
       </div>
-      <div className="relative h-1.5 w-full overflow-hidden rounded-full glass-light">
+      <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary/40 border border-border/30">
         <div 
-          className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} ${colorTheme.glow} rounded-full`}
+          className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} rounded-full transition-all duration-300 ease-out`}
           style={progressStyle}
         >
-          <div className="absolute inset-0 bg-white/20 rounded-full opacity-0"></div>
+          <div className="absolute inset-0 bg-white/10 rounded-full"></div>
         </div>
       </div>
     </div>
