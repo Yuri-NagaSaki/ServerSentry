@@ -12,6 +12,7 @@ export const HeadTitle: React.FC = () => {
       .then(r => r.ok ? r.json() : null)
       .then(json => {
         const t = json?.data?.sitename;
+        if (typeof t === 'string' && t.trim()) {
           setTitle(t);
           document.title = t;
         } else {
