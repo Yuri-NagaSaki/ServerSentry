@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { config } from '@/lib/config';
-import { usePublic } from '@/hooks/use-public';
 import { useTheme } from 'next-themes';
 
 // 内联SVG图标，减少bundle大小
@@ -21,10 +20,22 @@ const SunIcon = () => (
 export const Navbar: React.FC = React.memo(function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
-  const { data } = usePublic();
+  const [siteTitle, setSiteTitle] = React.useState<string>(config.siteTitle);
 
   React.useEffect(() => {
     setMounted(true);
+    // 客户端获取站点名，避免在无 QueryClient 的上下文使用 React Query
+    const controller = new AbortController();
+    fetch('/api/public', { signal: controller.signal })
+      .then(r => r.ok ? r.json() : null)
+      .then(json => {
+        const title = json?.data?.sitename;
+        if (typeof title === 'string' && title.trim()) {
+          setSiteTitle(title);
+        }
+      })
+      .catch(() => {})
+    return () => controller.abort();
   }, []);
 
   const toggleTheme = () => {
@@ -39,7 +50,7 @@ export const Navbar: React.FC = React.memo(function Navbar() {
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div className="flex items-center space-x-2 font-bold">
               <span className="text-xl">
-                {data?.data?.sitename || config.siteTitle}
+                {siteTitle}
               </span>
             </div>
 
@@ -59,7 +70,7 @@ export const Navbar: React.FC = React.memo(function Navbar() {
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-2 font-bold" suppressHydrationWarning>
             <span className="text-xl" suppressHydrationWarning>
-              {data?.data?.sitename || config.siteTitle}
+              {siteTitle}
             </span>
           </div>
 
