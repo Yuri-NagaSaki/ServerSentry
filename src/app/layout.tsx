@@ -8,6 +8,11 @@ import { HeadTitle } from "@/components/head-title";
 export const metadata: Metadata = {
   title: config.siteTitle,
   description: config.siteDescription,
+  icons: {
+    icon: [{ url: process.env.FAVICON_URL || '/favicon.ico' }],
+    shortcut: [{ url: process.env.FAVICON_URL || '/favicon.ico' }],
+    apple: [{ url: process.env.FAVICON_URL || '/favicon.ico' }],
+  },
 };
 
 export default function RootLayout({
