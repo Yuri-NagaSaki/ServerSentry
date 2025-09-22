@@ -20,7 +20,16 @@ interface ServerCardProps {
 
 export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerCard({ server }) {
   const isOnline = server.online4 || server.online6;
-  
+
+  // CPU 显示格式化，限制最多1位小数
+  const cpuFormatter = React.useMemo(() => {
+    const nf = new Intl.NumberFormat('zh-CN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1,
+    });
+    return (val: number) => nf.format(val);
+  }, []);
+
   // SWAP特殊处理 - 使用 useMemo 缓存
   const swapConfig = React.useMemo(() => {
     const hasSwap = server.swap_total > 0;
@@ -32,56 +41,57 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
     };
     return { hasSwap, formatter };
   }, [server.swap_total]);
-  
+
   // 缓存格式化函数
   const memoryFormatter = React.useCallback((val: number) => formatBytes(val * 1024), []);
   const diskFormatter = React.useCallback((val: number) => formatBytes(val * 1024 * 1024), []);
-  
+
   return (
     <div className="h-full server-card card-glass glass-hover rounded-xl overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] cursor-pointer">
       {/* 服务器信息头部 */}
-      <ServerCardHeader 
+      <ServerCardHeader
         server={server}
         isOnline={isOnline}
       />
-      
+
       {/* 服务器指标内容 */}
       <div className="p-4 pt-0 space-y-3 flex-grow flex flex-col">
-        <ServerMetric 
+        <ServerMetric
           label="CPU"
           value={server.cpu}
           total={100}
           unit="%"
+          formatter={cpuFormatter}
         />
-        
-        <ServerMetric 
+
+        <ServerMetric
           label="内存"
           value={server.memory_used}
           total={server.memory_total}
           formatter={memoryFormatter}
         />
-        
-        <ServerMetric 
+
+        <ServerMetric
           label="硬盘"
           value={server.hdd_used}
           total={server.hdd_total}
           formatter={diskFormatter}
         />
-        
-        <ServerMetric 
+
+        <ServerMetric
           label="SWAP"
           value={server.swap_used}
           total={server.swap_total || 1}
           formatter={swapConfig.formatter}
         />
-        
+
         {/* 网络面板 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 mt-auto">
           <RealTimeNetworkPanel
             downloadSpeed={server.network_rx}
             uploadSpeed={server.network_tx}
           />
-          
+
           <TotalTrafficPanel
             totalDownload={server.network_in}
             totalUpload={server.network_out}
@@ -102,9 +112,9 @@ interface ServerCardHeaderProps {
   isOnline: boolean;
 }
 
-const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function ServerCardHeader({ 
-  server, 
-  isOnline 
+const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function ServerCardHeader({
+  server,
+  isOnline
 }) {
   return (
     <div className="p-4 pb-2 space-y-2">
@@ -118,13 +128,13 @@ const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function Se
         </div>
         <StatusBadge isOnline={isOnline} />
       </div>
-      
+
       {/* 运行时间和标签行 */}
       <div className="flex items-center justify-between">
         <UptimeDisplay uptime={server.uptime} />
-        
+
         <div className="flex items-center gap-0.5 overflow-hidden">
-          <IPStatusBadges 
+          <IPStatusBadges
             ipv4Online={server.online4}
             ipv6Online={server.online6}
           />
@@ -167,4 +177,4 @@ const LocationTag: React.FC<{ label: string }> = React.memo(function LocationTag
     </span>
   );
 });
-LocationTag.displayName = 'LocationTag'; 
+LocationTag.displayName = 'LocationTag';
