@@ -85,6 +85,14 @@ export async function GET() {
         // 视作在线阈值：最近30秒内更新
         const consideredOnline = updatedAt > 0 && (Date.now() - updatedAt) <= 30_000;
 
+        // 单位转换：Komari 为字节；前端期望：内存/Swap = KiB，磁盘 = MiB
+        const memTotalKiB = Math.round((last?.ram?.total ?? node.mem_total ?? 0) / 1024);
+        const memUsedKiB = Math.round((last?.ram?.used ?? 0) / 1024);
+        const swapTotalKiB = Math.round((last?.swap?.total ?? node.swap_total ?? 0) / 1024);
+        const swapUsedKiB = Math.round((last?.swap?.used ?? 0) / 1024);
+        const diskTotalMiB = Math.round((last?.disk?.total ?? node.disk_total ?? 0) / (1024 * 1024));
+        const diskUsedMiB = Math.round((last?.disk?.used ?? 0) / (1024 * 1024));
+
         // 映射为现有前端期望的 Server 结构
         const server = {
           name: node.name || node.uuid,
@@ -103,12 +111,12 @@ export async function GET() {
           network_in: last?.network?.totalDown ?? 0,
           network_out: last?.network?.totalUp ?? 0,
           cpu: last?.cpu?.usage ?? 0,
-          memory_total: last?.ram?.total ?? node.mem_total ?? 0,
-          memory_used: last?.ram?.used ?? 0,
-          swap_total: last?.swap?.total ?? node.swap_total ?? 0,
-          swap_used: last?.swap?.used ?? 0,
-          hdd_total: last?.disk?.total ?? node.disk_total ?? 0,
-          hdd_used: last?.disk?.used ?? 0,
+          memory_total: memTotalKiB,
+          memory_used: memUsedKiB,
+          swap_total: swapTotalKiB,
+          swap_used: swapUsedKiB,
+          hdd_total: diskTotalMiB,
+          hdd_used: diskUsedMiB,
           labels: node.tags || '',
           weight: node.weight ?? 0,
           custom: '',
@@ -149,11 +157,11 @@ export async function GET() {
           network_in: 0,
           network_out: 0,
           cpu: 0,
-          memory_total: node.mem_total ?? 0,
+          memory_total: Math.round((node.mem_total ?? 0) / 1024),
           memory_used: 0,
-          swap_total: node.swap_total ?? 0,
+          swap_total: Math.round((node.swap_total ?? 0) / 1024),
           swap_used: 0,
-          hdd_total: node.disk_total ?? 0,
+          hdd_total: Math.round((node.disk_total ?? 0) / (1024 * 1024)),
           hdd_used: 0,
           labels: node.tags || '',
           weight: node.weight ?? 0,
