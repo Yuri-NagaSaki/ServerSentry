@@ -15,11 +15,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const faviconHref = process.env.FAVICON_URL || '/favicon.ico';
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+        <link rel="icon" href={faviconHref} />
         {/* API预连接优化 */}
         <link rel="preconnect" href={config.apiUrl} />
         {/* 字体预加载 */}
