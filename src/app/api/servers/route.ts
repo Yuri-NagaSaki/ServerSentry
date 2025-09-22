@@ -188,7 +188,7 @@ export async function GET() {
     }));
 
     const resp = {
-      updated: Date.now(),
+      updated: Math.floor(Date.now() / 1000),
       servers: enriched,
     };
 
