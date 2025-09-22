@@ -37,10 +37,11 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-        <link rel="icon" href={faviconHref} {...(faviconType ? { type: faviconType } : {})} />
-        <link rel="shortcut icon" href={faviconHref} {...(faviconType ? { type: faviconType } : {})} />
+        {/* 若浏览器仍请求 /favicon.ico，可由 pages 路由 /api/favicon 提供图标 */}
+        <link rel="icon" href={faviconHref || '/api/favicon'} {...(faviconType ? { type: faviconType } : {})} />
+        <link rel="shortcut icon" href={faviconHref || '/api/favicon'} {...(faviconType ? { type: faviconType } : {})} />
         {/* iOS 主屏图标 */}
-        <link rel="apple-touch-icon" href={faviconHref} />
+        <link rel="apple-touch-icon" href={faviconHref || '/api/favicon'} />
         {/* API预连接优化 */}
         <link rel="preconnect" href={config.apiUrl} />
         {/* 字体预加载 */}
