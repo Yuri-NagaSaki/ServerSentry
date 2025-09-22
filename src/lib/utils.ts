@@ -28,7 +28,7 @@ export function formatDateTime(timestamp: number): string {
  * 将秒数格式化为中文时长描述，自动省略为 0 的单位
  * 近似换算：1月=30天，1年=365天
  */
-export function formatDurationCn(totalSeconds: number): string {
+export function formatDurationCn(totalSeconds: number, maxParts = 6): string {
   if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return '0 秒';
 
   const SEC_PER_MIN = 60;
@@ -53,5 +53,6 @@ export function formatDurationCn(totalSeconds: number): string {
   if (minutes) parts.push(`${minutes}分`);
   if (seconds) parts.push(`${seconds}秒`);
 
-  return parts.join(' ');
+  const limited = parts.slice(0, Math.max(1, maxParts));
+  return limited.join(' ');
 }

@@ -155,10 +155,10 @@ const UptimeDisplay: React.FC<{ uptime: string }> = React.memo(function UptimeDi
     const match = uptime.match(/^(\d+)s$/);
     if (!match) return uptime;
     const seconds = parseInt(match[1], 10);
-    return formatDurationCn(seconds);
+    return formatDurationCn(seconds, 3);
   }, [uptime]);
   return (
-    <span className="inline-flex items-center text-muted-foreground text-xs whitespace-nowrap">
+    <span className="inline-flex items-center text-muted-foreground text-xs whitespace-nowrap" title={human}>
       <Clock className="h-3.5 w-3.5 mr-1" />
       <span suppressHydrationWarning>运行: {human || '—'}</span>
     </span>
