@@ -8,11 +8,6 @@ import { HeadTitle } from "@/components/head-title";
 export const metadata: Metadata = {
   title: config.siteTitle,
   description: config.siteDescription,
-  icons: {
-    icon: [{ url: process.env.FAVICON_URL || '/favicon.ico' }],
-    shortcut: [{ url: process.env.FAVICON_URL || '/favicon.ico' }],
-    apple: [{ url: process.env.FAVICON_URL || '/favicon.ico' }],
-  },
 };
 
 export default function RootLayout({
@@ -37,11 +32,10 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-        {/* 若浏览器仍请求 /favicon.ico，可由 pages 路由 /api/favicon 提供图标 */}
-        <link rel="icon" href={faviconHref || '/api/favicon'} {...(faviconType ? { type: faviconType } : {})} />
-        <link rel="shortcut icon" href={faviconHref || '/api/favicon'} {...(faviconType ? { type: faviconType } : {})} />
+        <link rel="icon" href={faviconHref} {...(faviconType ? { type: faviconType } : {})} />
+        <link rel="shortcut icon" href={faviconHref} {...(faviconType ? { type: faviconType } : {})} />
         {/* iOS 主屏图标 */}
-        <link rel="apple-touch-icon" href={faviconHref || '/api/favicon'} />
+        <link rel="apple-touch-icon" href={faviconHref} />
         {/* API预连接优化 */}
         <link rel="preconnect" href={config.apiUrl} />
         {/* 字体预加载 */}
