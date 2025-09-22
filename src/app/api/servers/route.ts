@@ -1,3 +1,46 @@
+interface KomariNode {
+  uuid: string;
+  name?: string;
+  cpu_name?: string;
+  virtualization?: string;
+  arch?: string;
+  cpu_cores?: number;
+  os?: string;
+  kernel_version?: string;
+  gpu_name?: string;
+  region?: string;
+  mem_total?: number;
+  swap_total?: number;
+  disk_total?: number;
+  weight?: number;
+  price?: number;
+  billing_cycle?: number;
+  auto_renewal?: boolean;
+  currency?: string;
+  expired_at?: string | null;
+  group?: string;
+  tags?: string;
+  hidden?: boolean;
+  traffic_limit?: number;
+  traffic_limit_type?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface KomariRecentEntry {
+  cpu?: { usage?: number };
+  ram?: { total?: number; used?: number };
+  swap?: { total?: number; used?: number };
+  load?: { load1?: number; load5?: number; load15?: number };
+  disk?: { total?: number; used?: number };
+  network?: { up?: number; down?: number; totalUp?: number; totalDown?: number };
+  connections?: { tcp?: number; udp?: number };
+  uptime?: number;
+  process?: number;
+  message?: string;
+  updated_at?: string;
+}
+
 export async function GET() {
   try {
     // 读取 Komari 服务端基础地址，例如：https://komari.example.com
@@ -20,10 +63,10 @@ export async function GET() {
       throw new Error(`Failed to fetch nodes: ${nodesRes.status}`);
     }
     const nodesJson = await nodesRes.json();
-    const nodes = Array.isArray(nodesJson?.data) ? nodesJson.data : [];
+    const nodes: KomariNode[] = Array.isArray(nodesJson?.data) ? (nodesJson.data as KomariNode[]) : [];
 
     // 2) 为每个节点获取最近1分钟数据（取最后一条）
-    const enriched = await Promise.all(nodes.map(async (node: any) => {
+    const enriched = await Promise.all(nodes.map(async (node: KomariNode) => {
       try {
         const recentRes = await fetch(`${baseUrl}/api/recent/${encodeURIComponent(node.uuid)}`, {
           headers: {
@@ -35,8 +78,8 @@ export async function GET() {
           }
         });
         const recentJson = recentRes.ok ? await recentRes.json() : null;
-        const list = Array.isArray(recentJson?.data) ? recentJson.data : [];
-        const last = list.length > 0 ? list[list.length - 1] : null;
+        const list: KomariRecentEntry[] = Array.isArray(recentJson?.data) ? (recentJson.data as KomariRecentEntry[]) : [];
+        const last: KomariRecentEntry | null = list.length > 0 ? list[list.length - 1] : null;
 
         const updatedAt = last?.updated_at ? Date.parse(last.updated_at) : 0;
         // 视作在线阈值：最近30秒内更新
