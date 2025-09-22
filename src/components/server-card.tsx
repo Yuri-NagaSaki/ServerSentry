@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Server, formatBytes } from '@/lib/api';
+import { formatDurationCn } from '@/lib/utils';
 import { ServerMetric } from './server-metric';
 import { Clock, MapPin, Server as ServerIcon } from 'lucide-react';
 
@@ -148,10 +149,18 @@ const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function Se
 
 // 运行时间显示组件
 const UptimeDisplay: React.FC<{ uptime: string }> = React.memo(function UptimeDisplay({ uptime }) {
+  // uptime 传入为 "{seconds}s" 或空字符串
+  const human = React.useMemo(() => {
+    if (!uptime) return '';
+    const match = uptime.match(/^(\d+)s$/);
+    if (!match) return uptime;
+    const seconds = parseInt(match[1], 10);
+    return formatDurationCn(seconds);
+  }, [uptime]);
   return (
     <span className="inline-flex items-center text-muted-foreground text-xs whitespace-nowrap">
       <Clock className="h-3.5 w-3.5 mr-1" />
-      <span suppressHydrationWarning>运行: {uptime}</span>
+      <span suppressHydrationWarning>运行: {human || '—'}</span>
     </span>
   );
 });
