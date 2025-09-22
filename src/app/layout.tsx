@@ -16,12 +16,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const faviconHref = process.env.FAVICON_URL || '/favicon.ico';
+  const getMimeFromUrl = (url: string): string => {
+    const lower = url.split('?')[0].toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    if (lower.endsWith('.avif')) return 'image/avif';
+    if (lower.endsWith('.svg')) return 'image/svg+xml';
+    if (lower.endsWith('.ico')) return 'image/x-icon';
+    return '';
+  };
+  const faviconType = getMimeFromUrl(faviconHref);
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
-        <link rel="icon" href={faviconHref} />
+        <link rel="icon" href={faviconHref} {...(faviconType ? { type: faviconType } : {})} />
+        <link rel="shortcut icon" href={faviconHref} {...(faviconType ? { type: faviconType } : {})} />
+        {/* iOS 主屏图标 */}
+        <link rel="apple-touch-icon" href={faviconHref} />
         {/* API预连接优化 */}
         <link rel="preconnect" href={config.apiUrl} />
         {/* 字体预加载 */}
