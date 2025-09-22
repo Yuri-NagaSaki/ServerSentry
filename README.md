@@ -49,13 +49,15 @@ bun run start
 
 ## 环境变量配置
 
-在项目根目录创建 `.env.local` 文件，配置 API URL：
+在项目根目录创建 `.env.local` 文件，配置后端地址：
 
 ```
-NEXT_PUBLIC_API_URL=http://your-server-status-api-url
+# 指向 Komari 服务端根地址，例如：https://status.example.com
+KOMARI_BASE_URL=https://your-komari-host
 ```
 
-如果不设置，默认将使用 `http://localhost:8080`。
+- 本主题内置了代理路由：`/api/servers`（聚合 `/api/nodes` 与 `/api/recent/{uuid}`）、`/api/public`、`/api/version`，均会转发至 `KOMARI_BASE_URL` 对应的 Komari 接口。
+- 若未设置该变量，数据接口将不可用。
 
 ## 部署指南
 

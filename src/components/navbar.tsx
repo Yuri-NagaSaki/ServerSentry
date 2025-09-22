@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { config } from '@/lib/config';
+import { usePublic } from '@/hooks/use-public';
 import { useTheme } from 'next-themes';
 
 // 内联SVG图标，减少bundle大小
@@ -20,15 +21,16 @@ const SunIcon = () => (
 export const Navbar: React.FC = React.memo(function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
-  
+  const { data } = usePublic();
+
   React.useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
-  
+
   // 防止水合错误，在mounted之前不显示主题按钮
   if (!mounted) {
     return (
@@ -37,10 +39,10 @@ export const Navbar: React.FC = React.memo(function Navbar() {
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div className="flex items-center space-x-2 font-bold">
               <span className="text-xl">
-                {config.siteTitle}
+                {data?.data?.sitename || config.siteTitle}
               </span>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <GitHubLink />
               <div className="h-9 w-9"></div>
@@ -50,20 +52,20 @@ export const Navbar: React.FC = React.memo(function Navbar() {
       </header>
     );
   }
-  
+
   return (
     <header className="sticky top-0 z-50 navbar-glass">
       <div className="flex h-14 items-center justify-center">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-2 font-bold" suppressHydrationWarning>
             <span className="text-xl" suppressHydrationWarning>
-              {config.siteTitle}
+              {data?.data?.sitename || config.siteTitle}
             </span>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <GitHubLink />
-            
+
             <button
               type="button"
               aria-label={theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
@@ -107,4 +109,4 @@ const GitHubLink = React.memo(function GitHubLink() {
       <span className="sr-only">访问GitHub仓库</span>
     </a>
   );
-}); 
+});
