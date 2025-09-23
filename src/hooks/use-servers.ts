@@ -10,8 +10,8 @@ export const useServers = () => {
     queryKey: ['servers-status'],
     queryFn: getServersStatus,
     refetchInterval: config.refreshInterval,
-    // 使用全局配置的staleTime
-    refetchOnWindowFocus: false, // 按照全局配置不在窗口聚焦时刷新
+    // 页面聚焦时立即刷新，避免显示过期数据
+    refetchOnWindowFocus: true,
     select: (data) => {
       // 只保留需要的字段，减少内存占用
       return {
@@ -24,4 +24,4 @@ export const useServers = () => {
       };
     }
   });
-}; 
+};

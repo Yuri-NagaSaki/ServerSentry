@@ -82,8 +82,8 @@ export async function GET() {
         const last: KomariRecentEntry | null = list.length > 0 ? list[list.length - 1] : null;
 
         const updatedAt = last?.updated_at ? Date.parse(last.updated_at) : 0;
-        // 视作在线阈值：最近30秒内更新
-        const consideredOnline = updatedAt > 0 && (Date.now() - updatedAt) <= 30_000;
+        // 视作在线阈值：最近3分钟内更新（延长判断时间，减少误判）
+        const consideredOnline = updatedAt > 0 && (Date.now() - updatedAt) <= 180_000;
 
         // 单位转换：Komari 为字节；前端期望：内存/Swap = KiB，磁盘 = MiB
         const memTotalKiB = Math.round((last?.ram?.total ?? node.mem_total ?? 0) / 1024);

@@ -8,7 +8,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient({
     defaultOptions: {
       queries: {
-        refetchOnWindowFocus: false,
+        refetchOnWindowFocus: true, // 页面聚焦时刷新，获取最新数据
+        refetchIntervalInBackground: false, // 后台时不刷新，节省资源
         retry: 1,
         gcTime: 1000 * 60 * 2, // 降低到2分钟垃圾回收时间，减少内存占用
         staleTime: 1000 * 60, // 增加到60秒过期时间，减少请求频率
@@ -36,4 +37,4 @@ export function Providers({ children }: { children: React.ReactNode }) {
       </ThemeProvider>
     </QueryClientProvider>
   );
-} 
+}
