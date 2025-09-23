@@ -9,7 +9,7 @@ export const useServers = () => {
   return useQuery<StatsResponse>({
     queryKey: ['servers-status'],
     queryFn: getServersStatus,
-    refetchInterval: (query) => {
+    refetchInterval: () => {
       // 页面隐藏时降低刷新频率，但不停止刷新
       if (typeof document !== 'undefined' && document.hidden) {
         return config.refreshInterval * 3; // 后台时3倍间隔
