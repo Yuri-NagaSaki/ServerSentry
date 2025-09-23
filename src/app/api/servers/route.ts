@@ -82,28 +82,9 @@ export async function GET() {
         const last: KomariRecentEntry | null = list.length > 0 ? list[list.length - 1] : null;
 
         const updatedAt = last?.updated_at ? Date.parse(last.updated_at) : 0;
-        const timeSinceUpdate = Date.now() - updatedAt;
-
-        // 智能在线判断：结合多个指标，减少误判
-        let consideredOnline = false;
-
-        if (timeSinceUpdate <= 60_000) {
-          // 1分钟内，直接认为在线
-          consideredOnline = true;
-        } else if (timeSinceUpdate <= 300_000) {
-          // 1-5分钟之间，检查是否有其他在线指标
-          const hasActivity = Boolean(
-            (last?.uptime && last.uptime > 0) ||
-            (last?.cpu?.usage && last.cpu.usage > 0) ||
-            (last?.network?.up && last.network.up > 0) ||
-            (last?.network?.down && last.network.down > 0) ||
-            (last?.ram?.used && last.ram.used > 0)
-          );
-          consideredOnline = hasActivity;
-        } else {
-          // 超过5分钟，认为离线
-          consideredOnline = false;
-        }
+        // 原版体验：不要因为时间过久而将缓存数据判为离线
+        // 只要存在最近一条记录，就认为在线；网络错误时再降级为离线
+        const consideredOnline = Boolean(last);
 
         // 单位转换：Komari 为字节；前端期望：内存/Swap = KiB，磁盘 = MiB
         const memTotalKiB = Math.round((last?.ram?.total ?? node.mem_total ?? 0) / 1024);
