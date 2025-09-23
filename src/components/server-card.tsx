@@ -134,7 +134,7 @@ const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function Se
       <div className="flex items-center justify-between">
         <UptimeDisplay uptime={server.uptime} />
 
-        <div className="flex items-center gap-0.5 overflow-hidden">
+        <div className="flex items-center gap-0.5 overflow-hidden min-w-0">
           <IPStatusBadges
             ipv4Online={server.online4}
             ipv6Online={server.online6}
@@ -171,7 +171,7 @@ const ServerTypeTag: React.FC<{ label: string }> = React.memo(function ServerTyp
   return (
     <span className="inline-flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 text-foreground/80 whitespace-nowrap">
       <ServerIcon className="h-3 w-3 mr-0.5 text-muted-foreground" />
-      <span suppressHydrationWarning>{label}</span>
+      <span className="truncate max-w-[6rem]" suppressHydrationWarning>{label}</span>
     </span>
   );
 });
@@ -182,7 +182,7 @@ const LocationTag: React.FC<{ label: string }> = React.memo(function LocationTag
   return (
     <span className="inline-flex items-center h-5 px-1 rounded-full text-[10px] font-medium bg-secondary/40 text-foreground/80 whitespace-nowrap">
       <MapPin className="h-3 w-3 mr-0.5 text-muted-foreground" />
-      <span suppressHydrationWarning>{label}</span>
+      <span className="truncate max-w-[8rem]" suppressHydrationWarning>{label}</span>
     </span>
   );
 });
