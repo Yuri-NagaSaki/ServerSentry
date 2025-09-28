@@ -11,10 +11,15 @@ interface RpcNode {
   os?: string;
   kernel_version?: string;
   gpu_name?: string;
+  ipv4?: string;
+  ipv6?: string;
   region?: string;
+  remark?: string;
+  public_remark?: string;
   mem_total?: number;
   swap_total?: number;
   disk_total?: number;
+  version?: string;
   weight?: number;
   price?: number;
   billing_cycle?: number;
@@ -73,6 +78,10 @@ export async function GET() {
       const consideredOnline = Boolean(last?.online);
       const updatedAt = last?.time ? Date.parse(last.time) : 0;
 
+      // 判断 IP 地址存在性（不显示具体地址，只判断是否存在）
+      const hasIPv4 = Boolean(node.ipv4 && node.ipv4.trim() !== '');
+      const hasIPv6 = Boolean(node.ipv6 && node.ipv6.trim() !== '');
+
       const memTotalKiB = Math.round((last?.ram_total ?? node.mem_total ?? 0) / 1024);
       const memUsedKiB = Math.round((last?.ram ?? 0) / 1024);
       const swapTotalKiB = Math.round((last?.swap_total ?? node.swap_total ?? 0) / 1024);
@@ -85,8 +94,8 @@ export async function GET() {
         alias: node.group || '',
         type: node.virtualization || node.arch || '',
         location: node.region || node.group || '',
-        online4: consideredOnline,
-        online6: consideredOnline,
+        online4: consideredOnline && hasIPv4,
+        online6: consideredOnline && hasIPv6,
         uptime: '',
         load_1: last?.load ?? 0,
         load_5: last?.load5 ?? 0,
