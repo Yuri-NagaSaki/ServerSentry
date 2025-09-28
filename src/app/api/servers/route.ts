@@ -1,4 +1,5 @@
 import { rpcGetNodes, rpcGetNodesLatestStatus } from '@/lib/rpc2';
+import { getKomariConfig } from '@/lib/rpc2';
 
 // RPC2 节点信息类型（基于 common:getNodes 返回结构）
 interface RpcNode {
@@ -61,6 +62,59 @@ interface RpcNodeStatus {
   online: boolean;
 }
 
+// 传统 API 响应类型（用于获取 uptime）
+interface TraditionalApiResponse {
+  status: string;
+  message: string;
+  data: Array<{
+    uptime: number;
+    updated_at: string;
+  }>;
+}
+
+/**
+ * 获取指定节点的 uptime 数据（使用传统 API）
+ */
+async function getNodeUptime(uuid: string): Promise<number | null> {
+  try {
+    const { baseUrl, apiKey } = getKomariConfig();
+    const url = baseUrl.endsWith('/')
+      ? `${baseUrl}api/recent/${uuid}`
+      : `${baseUrl}/api/recent/${uuid}`;
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+      next: { revalidate: 1 }
+    });
+
+    if (!response.ok) {
+      console.warn(`Failed to fetch uptime for ${uuid}: ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json() as TraditionalApiResponse;
+
+    if (data.status === 'success' && data.data && data.data.length > 0) {
+      // 返回最新的 uptime 值（秒）
+      return data.data[0].uptime;
+    }
+
+    return null;
+  } catch (error) {
+    console.warn(`Error fetching uptime for ${uuid}:`, error);
+    return null;
+  }
+}
+
 export async function GET() {
   try {
     // 1) 使用 RPC2 获取节点与最新状态
@@ -72,7 +126,18 @@ export async function GET() {
     const uuids = nodesArray.map(n => n.uuid).filter(Boolean);
     const latestMap = await rpcGetNodesLatestStatus(uuids);
 
-    // 2) 映射输出结构
+    // 2) 并行获取所有节点的 uptime 数据
+    const uptimePromises = uuids.map(async (uuid) => {
+      const uptime = await getNodeUptime(uuid);
+      return { uuid, uptime };
+    });
+
+    const uptimeResults = await Promise.all(uptimePromises);
+    const uptimeMap = new Map(
+      uptimeResults.map(result => [result.uuid, result.uptime])
+    );
+
+    // 3) 映射输出结构
     const enriched = nodesArray.map((node) => {
       const last = latestMap?.[node.uuid] as RpcNodeStatus | undefined;
       const consideredOnline = Boolean(last?.online);
@@ -96,7 +161,7 @@ export async function GET() {
         location: node.region || node.group || '',
         online4: consideredOnline && hasIPv4,
         online6: consideredOnline && hasIPv6,
-        uptime: '',
+        uptime: uptimeMap.get(node.uuid) ? `${uptimeMap.get(node.uuid)}s` : '',
         load_1: last?.load ?? 0,
         load_5: last?.load5 ?? 0,
         load_15: last?.load15 ?? 0,
