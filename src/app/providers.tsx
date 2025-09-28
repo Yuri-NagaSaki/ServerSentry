@@ -24,7 +24,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         attribute="class"
         defaultTheme="system"
         enableSystem={true}
-        disableTransitionOnChange={false}
+        disableTransitionOnChange={true}
         storageKey="theme"
         forcedTheme={undefined}
         themes={['light', 'dark', 'system']}

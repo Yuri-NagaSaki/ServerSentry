@@ -95,8 +95,6 @@
     background-color: var(--background);
     transform: translateZ(0);
     backface-visibility: hidden;
-    /* 主题切换过渡效果 */
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* macOS 特定优化 */
@@ -109,8 +107,6 @@
   * {
     @apply border-border outline-ring/50;
     box-sizing: border-box;
-    /* 主题切换过渡效果 */
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 
   body {
@@ -124,8 +120,6 @@
     scroll-behavior: smooth;
     overflow-x: hidden;
     min-height: 100vh;
-    /* 主题切换过渡效果 */
-    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* 丝滑滚动容器 */
