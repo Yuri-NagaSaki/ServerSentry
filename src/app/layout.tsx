@@ -47,6 +47,8 @@ export default function RootLayout({
             /* LCP优化 - 立即显示标题 */
             .dashboard-title{min-height:48px;line-height:1.2;contain:layout;font-family:ui-sans-serif,system-ui,-apple-system,sans-serif}
             .dashboard-title h2{font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;font-size:1.875rem;line-height:2.25rem;font-weight:700;letter-spacing:-0.025em;margin:0}
+            /* 主题切换过渡效果 */
+            *{transition:background-color 0.2s ease,color 0.2s ease,border-color 0.2s ease}
           `
         }} />
       </head>

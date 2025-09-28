@@ -22,14 +22,16 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
         attribute="class"
-        defaultTheme="light"
-        enableSystem={false}
-        disableTransitionOnChange
+        defaultTheme="system"
+        enableSystem={true}
+        disableTransitionOnChange={false}
         storageKey="theme"
         forcedTheme={undefined}
+        themes={['light', 'dark', 'system']}
         value={{
           light: 'light',
-          dark: 'dark'
+          dark: 'dark',
+          system: 'system'
         }}
       >
         {children}
