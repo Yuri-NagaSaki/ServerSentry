@@ -1,4 +1,7 @@
-interface KomariNode {
+import { rpcGetNodes, rpcGetNodesLatestStatus } from '@/lib/rpc2';
+
+// RPC2 节点信息类型（基于 common:getNodes 返回结构）
+interface RpcNode {
   uuid: string;
   name?: string;
   cpu_name?: string;
@@ -27,18 +30,30 @@ interface KomariNode {
   updated_at?: string;
 }
 
-interface KomariRecentEntry {
-  cpu?: { usage?: number };
-  ram?: { total?: number; used?: number };
-  swap?: { total?: number; used?: number };
-  load?: { load1?: number; load5?: number; load15?: number };
-  disk?: { total?: number; used?: number };
-  network?: { up?: number; down?: number; totalUp?: number; totalDown?: number };
-  connections?: { tcp?: number; udp?: number };
-  uptime?: number;
-  process?: number;
-  message?: string;
-  updated_at?: string;
+// RPC2 节点状态类型（基于 common:getNodesLatestStatus 返回结构）
+interface RpcNodeStatus {
+  client: string;
+  time: string;
+  cpu: number;
+  gpu: number;
+  ram: number;
+  ram_total: number;
+  swap: number;
+  swap_total: number;
+  load: number;
+  load5: number;
+  load15: number;
+  temp: number;
+  disk: number;
+  disk_total: number;
+  net_in: number;
+  net_out: number;
+  net_total_up: number;
+  net_total_down: number;
+  process: number;
+  connections: number;
+  connections_udp: number;
+  online: boolean;
 }
 
 export async function GET() {
@@ -49,144 +64,73 @@ export async function GET() {
       throw new Error('KOMARI_BASE_URL not configured');
     }
 
-    // 1) 获取节点列表
-    const nodesRes = await fetch(`${baseUrl}/api/nodes`, {
-      headers: {
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
-      },
-      next: {
-        revalidate: 1
-      }
+    // 1) 使用 RPC2 获取节点与最新状态
+    const nodesResp = await rpcGetNodes(baseUrl);
+    const nodesArray: RpcNode[] = Array.isArray(nodesResp)
+      ? nodesResp
+      : Object.values(nodesResp || {});
+
+    const uuids = nodesArray.map(n => n.uuid).filter(Boolean);
+    const latestMap = await rpcGetNodesLatestStatus(baseUrl, uuids);
+
+    // 2) 映射输出结构
+    const enriched = nodesArray.map((node) => {
+      const last = latestMap?.[node.uuid] as RpcNodeStatus | undefined;
+      const consideredOnline = Boolean(last?.online);
+      const updatedAt = last?.time ? Date.parse(last.time) : 0;
+
+      const memTotalKiB = Math.round((last?.ram_total ?? node.mem_total ?? 0) / 1024);
+      const memUsedKiB = Math.round((last?.ram ?? 0) / 1024);
+      const swapTotalKiB = Math.round((last?.swap_total ?? node.swap_total ?? 0) / 1024);
+      const swapUsedKiB = Math.round((last?.swap ?? 0) / 1024);
+      const diskTotalMiB = Math.round((last?.disk_total ?? node.disk_total ?? 0) / (1024 * 1024));
+      const diskUsedMiB = Math.round((last?.disk ?? 0) / (1024 * 1024));
+
+      return {
+        name: node.name || node.uuid,
+        alias: node.group || '',
+        type: node.virtualization || node.arch || '',
+        location: node.region || node.group || '',
+        online4: consideredOnline,
+        online6: consideredOnline,
+        uptime: '',
+        load_1: last?.load ?? 0,
+        load_5: last?.load5 ?? 0,
+        load_15: last?.load15 ?? 0,
+        // RPC2 负载记录结构为扁平：net_out/net_in 为速率；net_total_* 为累计
+        network_rx: last?.net_in ?? 0,
+        network_tx: last?.net_out ?? 0,
+        network_in: last?.net_total_down ?? 0,
+        network_out: last?.net_total_up ?? 0,
+        cpu: last?.cpu ?? 0,
+        memory_total: memTotalKiB,
+        memory_used: memUsedKiB,
+        swap_total: swapTotalKiB,
+        swap_used: swapUsedKiB,
+        hdd_total: diskTotalMiB,
+        hdd_used: diskUsedMiB,
+        labels: node.tags || '',
+        weight: node.weight ?? 0,
+        custom: '',
+        gid: node.group || '',
+        last_network_in: undefined,
+        last_network_out: undefined,
+        notify: undefined,
+        vnstat: undefined,
+        ping_10010: undefined,
+        ping_189: undefined,
+        ping_10086: undefined,
+        time_10010: undefined,
+        time_189: undefined,
+        time_10086: undefined,
+        tcp_count: last?.connections ?? 0,
+        udp_count: last?.connections_udp ?? 0,
+        process_count: last?.process ?? 0,
+        thread_count: undefined,
+        latest_ts: updatedAt || Date.now(),
+        si: undefined,
+      };
     });
-    if (!nodesRes.ok) {
-      throw new Error(`Failed to fetch nodes: ${nodesRes.status}`);
-    }
-    const nodesJson = await nodesRes.json();
-    const nodes: KomariNode[] = Array.isArray(nodesJson?.data) ? (nodesJson.data as KomariNode[]) : [];
-
-    // 2) 为每个节点获取最近1分钟数据（取最后一条）
-    const enriched = await Promise.all(nodes.map(async (node: KomariNode) => {
-      try {
-        const recentRes = await fetch(`${baseUrl}/api/recent/${encodeURIComponent(node.uuid)}`, {
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          },
-          next: {
-            revalidate: 1
-          }
-        });
-        const recentJson = recentRes.ok ? await recentRes.json() : null;
-        const list: KomariRecentEntry[] = Array.isArray(recentJson?.data) ? (recentJson.data as KomariRecentEntry[]) : [];
-        const last: KomariRecentEntry | null = list.length > 0 ? list[list.length - 1] : null;
-
-        const updatedAt = last?.updated_at ? Date.parse(last.updated_at) : 0;
-        // 原版体验：不要因为时间过久而将缓存数据判为离线
-        // 只要存在最近一条记录，就认为在线；网络错误时再降级为离线
-        const consideredOnline = Boolean(last);
-
-        // 单位转换：Komari 为字节；前端期望：内存/Swap = KiB，磁盘 = MiB
-        const memTotalKiB = Math.round((last?.ram?.total ?? node.mem_total ?? 0) / 1024);
-        const memUsedKiB = Math.round((last?.ram?.used ?? 0) / 1024);
-        const swapTotalKiB = Math.round((last?.swap?.total ?? node.swap_total ?? 0) / 1024);
-        const swapUsedKiB = Math.round((last?.swap?.used ?? 0) / 1024);
-        const diskTotalMiB = Math.round((last?.disk?.total ?? node.disk_total ?? 0) / (1024 * 1024));
-        const diskUsedMiB = Math.round((last?.disk?.used ?? 0) / (1024 * 1024));
-
-        // 映射为现有前端期望的 Server 结构
-        const server = {
-          name: node.name || node.uuid,
-          alias: node.group || '',
-          type: node.virtualization || node.arch || '',
-          location: node.region || node.group || '',
-          online4: consideredOnline,
-          online6: consideredOnline,
-          uptime: typeof last?.uptime === 'number' ? `${last.uptime}s` : '',
-          load_1: last?.load?.load1 ?? 0,
-          load_5: last?.load?.load5 ?? 0,
-          load_15: last?.load?.load15 ?? 0,
-          // Komari: network.down = 下载速率，network.up = 上传速率（字节/秒）
-          network_rx: last?.network?.down ?? 0,
-          network_tx: last?.network?.up ?? 0,
-          network_in: last?.network?.totalDown ?? 0,
-          network_out: last?.network?.totalUp ?? 0,
-          cpu: last?.cpu?.usage ?? 0,
-          memory_total: memTotalKiB,
-          memory_used: memUsedKiB,
-          swap_total: swapTotalKiB,
-          swap_used: swapUsedKiB,
-          hdd_total: diskTotalMiB,
-          hdd_used: diskUsedMiB,
-          labels: node.tags || '',
-          weight: node.weight ?? 0,
-          custom: '',
-          gid: node.group || '',
-          last_network_in: undefined,
-          last_network_out: undefined,
-          notify: undefined,
-          vnstat: undefined,
-          ping_10010: undefined,
-          ping_189: undefined,
-          ping_10086: undefined,
-          time_10010: undefined,
-          time_189: undefined,
-          time_10086: undefined,
-          tcp_count: last?.connections?.tcp ?? 0,
-          udp_count: last?.connections?.udp ?? 0,
-          process_count: last?.process ?? 0,
-          thread_count: undefined,
-          latest_ts: updatedAt || Date.now(),
-          si: undefined,
-        };
-        return server;
-      } catch {
-        // 若 recent 拉取失败，仍返回基本节点信息，视为离线
-        return {
-          name: node.name || node.uuid,
-          alias: node.group || '',
-          type: node.virtualization || node.arch || '',
-          location: node.region || node.group || '',
-          online4: false,
-          online6: false,
-          uptime: '',
-          load_1: 0,
-          load_5: 0,
-          load_15: 0,
-          network_rx: 0,
-          network_tx: 0,
-          network_in: 0,
-          network_out: 0,
-          cpu: 0,
-          memory_total: Math.round((node.mem_total ?? 0) / 1024),
-          memory_used: 0,
-          swap_total: Math.round((node.swap_total ?? 0) / 1024),
-          swap_used: 0,
-          hdd_total: Math.round((node.disk_total ?? 0) / (1024 * 1024)),
-          hdd_used: 0,
-          labels: node.tags || '',
-          weight: node.weight ?? 0,
-          custom: '',
-          gid: node.group || '',
-          last_network_in: undefined,
-          last_network_out: undefined,
-          notify: undefined,
-          vnstat: undefined,
-          ping_10010: undefined,
-          ping_189: undefined,
-          ping_10086: undefined,
-          time_10010: undefined,
-          time_189: undefined,
-          time_10086: undefined,
-          tcp_count: 0,
-          udp_count: 0,
-          process_count: 0,
-          thread_count: undefined,
-          latest_ts: Date.now(),
-          si: undefined,
-        };
-      }
-    }));
 
     const resp = {
       updated: Math.floor(Date.now() / 1000),

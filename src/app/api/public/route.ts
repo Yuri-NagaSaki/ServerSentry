@@ -1,3 +1,5 @@
+import { rpcGetPublicInfo } from '@/lib/rpc2';
+
 export async function GET() {
   try {
     const baseUrl = process.env.KOMARI_BASE_URL;
@@ -5,18 +7,8 @@ export async function GET() {
       throw new Error('KOMARI_BASE_URL not configured');
     }
 
-    const res = await fetch(`${baseUrl}/api/public`, {
-      headers: {
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
-      },
-      next: { revalidate: 5 }
-    });
-    if (!res.ok) {
-      throw new Error(`Failed to fetch /api/public: ${res.status}`);
-    }
-    const data = await res.json();
-    return Response.json(data, {
+    const data = await rpcGetPublicInfo(baseUrl);
+    return Response.json({ status: 'success', message: '', data }, {
       headers: {
         'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=10',
         'Access-Control-Allow-Origin': '*',

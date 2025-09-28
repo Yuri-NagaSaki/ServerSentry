@@ -1,3 +1,5 @@
+import { rpcGetVersion } from '@/lib/rpc2';
+
 export async function GET() {
   try {
     const baseUrl = process.env.KOMARI_BASE_URL;
@@ -5,18 +7,8 @@ export async function GET() {
       throw new Error('KOMARI_BASE_URL not configured');
     }
 
-    const res = await fetch(`${baseUrl}/api/version`, {
-      headers: {
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
-      },
-      next: { revalidate: 60 }
-    });
-    if (!res.ok) {
-      throw new Error(`Failed to fetch /api/version: ${res.status}`);
-    }
-    const data = await res.json();
-    return Response.json(data, {
+    const data = await rpcGetVersion(baseUrl);
+    return Response.json({ status: 'success', message: '', data }, {
       headers: {
         'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
         'Access-Control-Allow-Origin': '*',
