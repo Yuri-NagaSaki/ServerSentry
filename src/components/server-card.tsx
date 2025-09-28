@@ -131,10 +131,10 @@ const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function Se
       </div>
 
       {/* 运行时间和标签行 */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <UptimeDisplay uptime={server.uptime} />
 
-        <div className="flex items-center gap-0.5 overflow-hidden min-w-0">
+        <div className="flex items-center gap-0.5 ml-auto flex-shrink-0">
           <IPStatusBadges
             ipv4Online={server.online4}
             ipv6Online={server.online6}
