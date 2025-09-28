@@ -58,20 +58,14 @@ interface RpcNodeStatus {
 
 export async function GET() {
   try {
-    // 读取 Komari 服务端基础地址，例如：https://komari.example.com
-    const baseUrl = process.env.KOMARI_BASE_URL;
-    if (!baseUrl) {
-      throw new Error('KOMARI_BASE_URL not configured');
-    }
-
     // 1) 使用 RPC2 获取节点与最新状态
-    const nodesResp = await rpcGetNodes(baseUrl);
+    const nodesResp = await rpcGetNodes();
     const nodesArray: RpcNode[] = Array.isArray(nodesResp)
       ? nodesResp
       : Object.values(nodesResp || {});
 
     const uuids = nodesArray.map(n => n.uuid).filter(Boolean);
-    const latestMap = await rpcGetNodesLatestStatus(baseUrl, uuids);
+    const latestMap = await rpcGetNodesLatestStatus(uuids);
 
     // 2) 映射输出结构
     const enriched = nodesArray.map((node) => {
