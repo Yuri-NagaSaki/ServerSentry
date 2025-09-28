@@ -185,7 +185,7 @@ export async function callRpc<T = unknown, TParams = unknown>(
   baseUrl: string,
   method: string,
   params?: TParams,
-  init?: RequestInit
+  init?: RequestInit & { apiKey?: string }
 ): Promise<T> {
   const url = baseUrl.endsWith('/') ? `${baseUrl}api/rpc2` : `${baseUrl}/api/rpc2`;
   const req: JsonRpcRequest<TParams> = {
@@ -195,12 +195,27 @@ export async function callRpc<T = unknown, TParams = unknown>(
     params,
   };
 
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  // 添加自定义请求头
+  if (init?.headers) {
+    Object.entries(init.headers).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        headers[key] = value;
+      }
+    });
+  }
+
+  // 添加 API Key 鉴权
+  if (init?.apiKey) {
+    headers['Authorization'] = `Bearer ${init.apiKey}`;
+  }
+
   const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers || {}),
-    },
+    headers,
     body: JSON.stringify(req),
     next: (init as RequestInit & { next?: unknown })?.next,
   } as RequestInit);
@@ -215,50 +230,72 @@ export async function callRpc<T = unknown, TParams = unknown>(
   return (payload as JsonRpcSuccess<T>).result;
 }
 
+/**
+ * 获取 Komari 基础配置
+ */
+export function getKomariConfig() {
+  const baseUrl = process.env.KOMARI_BASE_URL;
+  const apiKey = process.env.KOMARI_API_KEY;
+
+  if (!baseUrl) {
+    throw new Error('KOMARI_BASE_URL not configured');
+  }
+
+  return { baseUrl, apiKey };
+}
+
 // ===== RPC2 方法封装 =====
-export function rpcMethods(baseUrl: string, internal?: boolean) {
+export function rpcMethods(internal?: boolean) {
+  const { baseUrl, apiKey } = getKomariConfig();
   const params = typeof internal === 'boolean' ? { internal } : undefined;
-  return callRpc<string[]>(baseUrl, 'rpc.methods', params);
+  return callRpc<string[]>(baseUrl, 'rpc.methods', params, { apiKey });
 }
 
-export function rpcHelp(baseUrl: string, method?: string) {
+export function rpcHelp(method?: string) {
+  const { baseUrl, apiKey } = getKomariConfig();
   const params = method ? { method } : undefined;
-  return callRpc<Record<string, unknown> | null>(baseUrl, 'rpc.help', params);
+  return callRpc<Record<string, unknown> | null>(baseUrl, 'rpc.help', params, { apiKey });
 }
 
-export function rpcPing(baseUrl: string) {
-  return callRpc<string>(baseUrl, 'rpc.ping');
+export function rpcPing() {
+  const { baseUrl, apiKey } = getKomariConfig();
+  return callRpc<string>(baseUrl, 'rpc.ping', undefined, { apiKey });
 }
 
-export function rpcGetVersion(baseUrl: string) {
-  return callRpc<VersionInfo>(baseUrl, 'common:getVersion');
+export function rpcGetVersion() {
+  const { baseUrl, apiKey } = getKomariConfig();
+  return callRpc<VersionInfo>(baseUrl, 'common:getVersion', undefined, { apiKey });
 }
 
-export function rpcGetPublicInfo(baseUrl: string) {
-  return callRpc<PublicInfo>(baseUrl, 'common:getPublicInfo');
+export function rpcGetPublicInfo() {
+  const { baseUrl, apiKey } = getKomariConfig();
+  return callRpc<PublicInfo>(baseUrl, 'common:getPublicInfo', undefined, { apiKey });
 }
 
-export function rpcGetNodes(baseUrl: string, uuid?: string) {
+export function rpcGetNodes(uuid?: string) {
+  const { baseUrl, apiKey } = getKomariConfig();
   type NodesResp = Client | Record<string, Client>;
   const params = uuid ? { uuid } : undefined;
-  return callRpc<NodesResp>(baseUrl, 'common:getNodes', params);
+  return callRpc<NodesResp>(baseUrl, 'common:getNodes', params, { apiKey });
 }
 
-export function rpcGetNodesLatestStatus(baseUrl: string, uuids?: string[]) {
+export function rpcGetNodesLatestStatus(uuids?: string[]) {
+  const { baseUrl, apiKey } = getKomariConfig();
   const params = Array.isArray(uuids) && uuids.length > 0 ? { uuids } : undefined;
-  return callRpc<Record<string, NodeStatus>>(baseUrl, 'common:getNodesLatestStatus', params);
+  return callRpc<Record<string, NodeStatus>>(baseUrl, 'common:getNodesLatestStatus', params, { apiKey });
 }
 
-export function rpcGetMe(baseUrl: string) {
-  return callRpc<MeInfo>(baseUrl, 'common:getMe');
+export function rpcGetMe() {
+  const { baseUrl, apiKey } = getKomariConfig();
+  return callRpc<MeInfo>(baseUrl, 'common:getMe', undefined, { apiKey });
 }
 
-export function rpcGetNodeRecentStatus(baseUrl: string, uuid: string) {
-  return callRpc<RecentStatusResp>(baseUrl, 'common:getNodeRecentStatus', { uuid });
+export function rpcGetNodeRecentStatus(uuid: string) {
+  const { baseUrl, apiKey } = getKomariConfig();
+  return callRpc<RecentStatusResp>(baseUrl, 'common:getNodeRecentStatus', { uuid }, { apiKey });
 }
 
 export function rpcGetRecords(
-  baseUrl: string,
   params: {
     type?: 'load' | 'ping';
     uuid?: string;
@@ -270,10 +307,9 @@ export function rpcGetRecords(
     maxCount?: number;
   } = {}
 ) {
+  const { baseUrl, apiKey } = getKomariConfig();
   if (params.type === 'ping') {
-    return callRpc<PingRecordsResp>(baseUrl, 'common:getRecords', params);
+    return callRpc<PingRecordsResp>(baseUrl, 'common:getRecords', params, { apiKey });
   }
-  return callRpc<LoadRecordsWithUuid>(baseUrl, 'common:getRecords', params);
+  return callRpc<LoadRecordsWithUuid>(baseUrl, 'common:getRecords', params, { apiKey });
 }
-
-
