@@ -5,9 +5,12 @@ export async function GET(request: NextRequest) {
   try {
     const { baseUrl, apiKey } = getKomariConfig();
 
-    // 构建 WebSocket URL
-    const wsUrl = baseUrl.replace(/^https?:\/\//, 'ws://').replace(/^https:\/\//, 'wss://');
-    const targetWsUrl = `${wsUrl}/api/rpc2/ws`;
+    // 构建 WebSocket URL（https -> wss, http -> ws）
+    const urlObj = new URL(baseUrl);
+    const wsProtocol = urlObj.protocol === 'https:' ? 'wss:' : 'ws:';
+    urlObj.protocol = wsProtocol;
+    const wsOrigin = urlObj.toString().replace(/\/$/, '');
+    const targetWsUrl = `${wsOrigin}/api/rpc2/ws`;
 
     // 获取查询参数
     const url = new URL(request.url);
