@@ -32,7 +32,7 @@ export const UptimeDisplay: React.FC<{ uptime: string }> = ({ uptime }) => {
   return (
     <div className="flex items-center space-x-1 flex-shrink-0 whitespace-nowrap">
       <Clock className="h-3.5 w-3.5" />
-      <span className="whitespace-nowrap" suppressHydrationWarning>运行: {human || '—'}</span>
+      <span className="whitespace-nowrap" suppressHydrationWarning>{human || '—'}</span>
     </div>
   );
 };

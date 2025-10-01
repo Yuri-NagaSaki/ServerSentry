@@ -161,7 +161,7 @@ const UptimeDisplay: React.FC<{ uptime: string }> = React.memo(function UptimeDi
   return (
     <span className="inline-flex items-center text-muted-foreground text-xs whitespace-nowrap" title={human}>
       <Clock className="h-3.5 w-3.5 mr-1" />
-      <span suppressHydrationWarning>运行: {human || '—'}</span>
+      <span suppressHydrationWarning>{human || '—'}</span>
     </span>
   );
 });
