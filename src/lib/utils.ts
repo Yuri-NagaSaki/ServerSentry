@@ -25,11 +25,11 @@ export function formatDateTime(timestamp: number): string {
 }
 
 /**
- * 将秒数格式化为中文时长描述，自动省略为 0 的单位
+ * 将秒数格式化为英文简写时长（y/mo/d/h/m/s），自动省略为 0 的单位
  * 近似换算：1月=30天，1年=365天
  */
-export function formatDurationCn(totalSeconds: number, maxParts = 6): string {
-  if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return '0 秒';
+export function formatDurationEnShort(totalSeconds: number, maxParts = 3): string {
+  if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return '0s';
 
   const SEC_PER_MIN = 60;
   const SEC_PER_HOUR = 60 * SEC_PER_MIN;
@@ -46,12 +46,12 @@ export function formatDurationCn(totalSeconds: number, maxParts = 6): string {
   const seconds = remaining;
 
   const parts: string[] = [];
-  if (years) parts.push(`${years}年`);
-  if (months) parts.push(`${months}月`);
-  if (days) parts.push(`${days}天`);
-  if (hours) parts.push(`${hours}时`);
-  if (minutes) parts.push(`${minutes}分`);
-  if (seconds) parts.push(`${seconds}秒`);
+  if (years) parts.push(`${years}y`);
+  if (months) parts.push(`${months}mo`);
+  if (days) parts.push(`${days}d`);
+  if (hours) parts.push(`${hours}h`);
+  if (minutes) parts.push(`${minutes}m`);
+  if (seconds) parts.push(`${seconds}s`);
 
   const limited = parts.slice(0, Math.max(1, maxParts));
   return limited.join(' ');

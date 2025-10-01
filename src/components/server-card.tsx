@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Server, formatBytes } from '@/lib/api';
-import { formatDurationCn } from '@/lib/utils';
+import { formatDurationEnShort } from '@/lib/utils';
 import { ServerMetric } from './server-metric';
 import { Clock, MapPin, Server as ServerIcon } from 'lucide-react';
 
@@ -155,7 +155,7 @@ const UptimeDisplay: React.FC<{ uptime: string }> = React.memo(function UptimeDi
     const match = uptime.match(/^(\d+)s$/);
     if (!match) return uptime;
     const seconds = parseInt(match[1], 10);
-    return formatDurationCn(seconds, 3);
+    return formatDurationEnShort(seconds, 3);
   }, [uptime]);
   return (
     <span className="inline-flex items-center text-muted-foreground text-xs whitespace-nowrap" title={human}>

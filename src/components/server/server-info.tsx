@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Clock } from 'lucide-react';
-import { formatDurationCn } from '@/lib/utils';
+import { formatDurationEnShort } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 
 interface ServerInfoProps {
@@ -26,7 +26,7 @@ export const UptimeDisplay: React.FC<{ uptime: string }> = ({ uptime }) => {
     const match = uptime.match(/^(\d+)s$/);
     if (!match) return uptime;
     const seconds = parseInt(match[1], 10);
-    return formatDurationCn(seconds, 3);
+    return formatDurationEnShort(seconds, 3);
   }, [uptime]);
 
   return (
