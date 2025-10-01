@@ -11,6 +11,19 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      'no-restricted-imports': ['error', {
+        paths: [
+          {
+            name: '@/lib/api',
+            importNames: ['formatBytes', 'formatSpeed', 'formatPercent'],
+            message: '请从 "@/lib/utils" 引入格式化函数（API 层禁止导出格式化函数）'
+          }
+        ]
+      }]
+    }
+  }
 ];
 
 export default eslintConfig;

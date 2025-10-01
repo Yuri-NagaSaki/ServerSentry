@@ -56,3 +56,58 @@ export function formatDurationEnShort(totalSeconds: number, maxParts = 3): strin
   const limited = parts.slice(0, Math.max(1, maxParts));
   return limited.join(' ');
 }
+
+/**
+ * 格式化流量数据 - 使用原生Intl.NumberFormat
+ * @param bytes 字节数
+ * @param decimals 小数位数
+ * @returns 格式化后的流量
+ */
+export const formatBytes = (bytes: number, decimals = 1): string => {
+  if (bytes === 0) return '0 B';
+
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const value = bytes / Math.pow(k, i);
+
+  const formatter = new Intl.NumberFormat('zh-CN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals
+  });
+
+  return `${formatter.format(value)} ${sizes[i]}`;
+};
+
+/**
+ * 格式化百分比
+ * @param value 值
+ * @param total 总量
+ * @returns 百分比整数（0-100）
+ */
+export const formatPercent = (value: number, total: number): number => {
+  if (total === 0) return 0;
+  return Math.round((value / total) * 100);
+};
+
+/**
+ * 格式化网络速率数据 - 使用原生Intl.NumberFormat
+ * @param bytes 字节数
+ * @param decimals 小数位数
+ * @returns 格式化后的速率
+ */
+export const formatSpeed = (bytes: number, decimals = 1): string => {
+  if (bytes === 0) return '0 B/s';
+
+  const k = 1024;
+  const sizes = ['B/s', 'K/s', 'M/s', 'G/s', 'T/s', 'P/s', 'E/s', 'Z/s', 'Y/s'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const value = bytes / Math.pow(k, i);
+
+  const formatter = new Intl.NumberFormat('zh-CN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals
+  });
+
+  return `${formatter.format(value)} ${sizes[i]}`;
+};

@@ -6,6 +6,7 @@ export interface Server {
   alias: string;
   type: string;
   location: string;
+  online: boolean;
   online4: boolean;
   online6: boolean;
   uptime: string;
@@ -64,7 +65,7 @@ export const getServersStatus = async (): Promise<StatsResponse> => {
         'Pragma': 'no-cache'
       },
       // Next.js fetch 缓存配置
-      next: { 
+      next: {
         revalidate: 1 // 1秒缓存
       }
     });
@@ -81,60 +82,6 @@ export const getServersStatus = async (): Promise<StatsResponse> => {
   }
 };
 
-/**
- * 格式化流量数据 - 使用原生Intl.NumberFormat
- * @param bytes 字节数
- * @param decimals 小数位数
- * @returns 格式化后的流量
- */
-export const formatBytes = (bytes: number, decimals = 1): string => {
-  if (bytes === 0) return '0 B';
-  
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const value = bytes / Math.pow(k, i);
-  
-  const formatter = new Intl.NumberFormat('zh-CN', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals
-  });
-  
-  return `${formatter.format(value)} ${sizes[i]}`;
-};
-
-/**
- * 格式化百分比 - 使用原生Intl.NumberFormat
- * @param value 值
- * @param total 总量
- * @returns 格式化后的百分比
- */
-export const formatPercent = (value: number, total: number): number => {
-  if (total === 0) return 0;
-  return Math.round((value / total) * 100);
-};
-
-/**
- * 格式化网络速率数据 - 使用原生Intl.NumberFormat
- * @param bytes 字节数
- * @param decimals 小数位数
- * @returns 格式化后的速率
- */
-export const formatSpeed = (bytes: number, decimals = 1): string => {
-  if (bytes === 0) return '0 B/s';
-  
-  const k = 1024;
-  const sizes = ['B/s', 'K/s', 'M/s', 'G/s', 'T/s', 'P/s', 'E/s', 'Z/s', 'Y/s'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const value = bytes / Math.pow(k, i);
-  
-  const formatter = new Intl.NumberFormat('zh-CN', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals
-  });
-  
-  return `${formatter.format(value)} ${sizes[i]}`;
-};
 
 /**
  * 地区分组类型
@@ -151,7 +98,7 @@ export interface RegionGroup {
  */
 export const groupServersByRegion = (servers: Server[]): RegionGroup[] => {
   const groups = new Map<string, Server[]>();
-  
+
   servers.forEach((server) => {
     const region = server.location || '未知地区';
     if (!groups.has(region)) {
@@ -159,7 +106,7 @@ export const groupServersByRegion = (servers: Server[]): RegionGroup[] => {
     }
     groups.get(region)!.push(server);
   });
-  
+
   // 转换为数组并按地区名排序
   return Array.from(groups.entries())
     .map(([region, servers]) => ({ region, servers }))
@@ -183,4 +130,4 @@ export const getUniqueRegions = (servers: Server[]): string[] => {
     if (b === '未知地区') return -1;
     return a.localeCompare(b, 'zh-CN');
   });
-}; 
+};

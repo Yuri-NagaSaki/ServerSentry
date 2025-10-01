@@ -108,15 +108,7 @@ export interface NodeStatus {
   online: boolean;
 }
 
-export interface MeInfo {
-  two_factor_enabled?: boolean; // 兼容字段名变体
-  '2fa_enabled'?: boolean;
-  logged_in: boolean;
-  sso_id?: string;
-  sso_type?: string;
-  username?: string;
-  uuid?: string;
-}
+// 已裁剪未使用的账户信息类型
 
 export interface StatusRecord {
   client: string;
@@ -142,41 +134,9 @@ export interface StatusRecord {
   connections_udp?: number;
 }
 
-export interface RecentStatusResp {
-  count: number;
-  records: StatusRecord[];
-}
+// 已裁剪未使用的最近状态响应类型
 
-export interface PingBasicInfo {
-  client: string;
-  loss: number;
-  min: number;
-  max: number;
-}
-
-export interface PingRecord {
-  task_id: number;
-  time: string;
-  value: number;
-  client: string;
-}
-
-export type LoadRecordsAllClients = Record<string, StatusRecord[]>;
-
-export interface LoadRecordsWithUuid {
-  count: number;
-  records: StatusRecord[] | LoadRecordsAllClients;
-  from: string;
-  to: string;
-}
-
-export interface PingRecordsResp {
-  count: number;
-  basic_info: PingBasicInfo[];
-  records: PingRecord[];
-  from: string;
-  to: string;
-}
+// 已裁剪未使用的记录/Ping 相关类型
 
 /**
  * JSON-RPC2 POST 客户端
@@ -245,22 +205,7 @@ export function getKomariConfig() {
 }
 
 // ===== RPC2 方法封装 =====
-export function rpcMethods(internal?: boolean) {
-  const { baseUrl, apiKey } = getKomariConfig();
-  const params = typeof internal === 'boolean' ? { internal } : undefined;
-  return callRpc<string[]>(baseUrl, 'rpc.methods', params, { apiKey });
-}
-
-export function rpcHelp(method?: string) {
-  const { baseUrl, apiKey } = getKomariConfig();
-  const params = method ? { method } : undefined;
-  return callRpc<Record<string, unknown> | null>(baseUrl, 'rpc.help', params, { apiKey });
-}
-
-export function rpcPing() {
-  const { baseUrl, apiKey } = getKomariConfig();
-  return callRpc<string>(baseUrl, 'rpc.ping', undefined, { apiKey });
-}
+// 已裁剪未使用的通用 RPC 方法（rpc.methods / rpc.help / rpc.ping）
 
 export function rpcGetVersion() {
   const { baseUrl, apiKey } = getKomariConfig();
@@ -284,32 +229,6 @@ export function rpcGetNodesLatestStatus(uuids?: string[]) {
   const params = Array.isArray(uuids) && uuids.length > 0 ? { uuids } : undefined;
   return callRpc<Record<string, NodeStatus>>(baseUrl, 'common:getNodesLatestStatus', params, { apiKey });
 }
+// 已裁剪未使用的账户/记录相关 RPC 包装方法
 
-export function rpcGetMe() {
-  const { baseUrl, apiKey } = getKomariConfig();
-  return callRpc<MeInfo>(baseUrl, 'common:getMe', undefined, { apiKey });
-}
 
-export function rpcGetNodeRecentStatus(uuid: string) {
-  const { baseUrl, apiKey } = getKomariConfig();
-  return callRpc<RecentStatusResp>(baseUrl, 'common:getNodeRecentStatus', { uuid }, { apiKey });
-}
-
-export function rpcGetRecords(
-  params: {
-    type?: 'load' | 'ping';
-    uuid?: string;
-    hours?: number;
-    start?: string;
-    end?: string;
-    load_type?: 'cpu' | 'gpu' | 'ram' | 'swap' | 'load' | 'temp' | 'disk' | 'network' | 'process' | 'connections' | 'all';
-    task_id?: number;
-    maxCount?: number;
-  } = {}
-) {
-  const { baseUrl, apiKey } = getKomariConfig();
-  if (params.type === 'ping') {
-    return callRpc<PingRecordsResp>(baseUrl, 'common:getRecords', params, { apiKey });
-  }
-  return callRpc<LoadRecordsWithUuid>(baseUrl, 'common:getRecords', params, { apiKey });
-}

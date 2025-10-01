@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Server, formatBytes } from '@/lib/api';
+import { Server } from '@/lib/api';
+import { formatBytes } from '@/lib/utils';
 import { formatDurationEnShort } from '@/lib/utils';
 import { ServerMetric } from './server-metric';
 import { Clock, MapPin, Server as ServerIcon } from 'lucide-react';

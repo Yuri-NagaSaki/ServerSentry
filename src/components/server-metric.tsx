@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { formatPercent } from '@/lib/api';
+import { formatPercent } from '@/lib/utils';
 
 interface ServerMetricProps {
   label: string;
@@ -44,10 +44,10 @@ export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function Ser
   const percent = formatPercent(value, total);
   const formattedValue = formatter(value);
   const formattedTotal = formatter(total);
-  
+
   // 检查未配置状态（例如SWAP为0）
   const isUnconfigured = formattedValue === "未配置";
-  
+
   // 根据百分比确定颜色主题 - 使用 useMemo 缓存计算
   const colorTheme = React.useMemo(() => {
     if (isUnconfigured) {
@@ -60,19 +60,19 @@ export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function Ser
       return colors.safe;
     }
   }, [percent, isUnconfigured]);
-  
+
   // 缓存样式字符串
   const progressStyle = React.useMemo(() => ({
     width: isUnconfigured ? "0%" : `${percent}%`
   }), [percent, isUnconfigured]);
-  
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium">{label}</span>
           {!isUnconfigured && (
-            <span 
+            <span
               className={`text-xs font-semibold ${colorTheme.text}`}
               suppressHydrationWarning
             >
@@ -85,7 +85,7 @@ export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function Ser
         </span>
       </div>
       <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-secondary/40 border border-border/30">
-        <div 
+        <div
           className={`absolute left-0 top-0 h-full bg-gradient-to-r ${colorTheme.gradient} rounded-full transition-all duration-300 ease-out`}
           style={progressStyle}
         >
@@ -95,4 +95,4 @@ export const ServerMetric: React.FC<ServerMetricProps> = React.memo(function Ser
     </div>
   );
 });
-ServerMetric.displayName = 'ServerMetric'; 
+ServerMetric.displayName = 'ServerMetric';
