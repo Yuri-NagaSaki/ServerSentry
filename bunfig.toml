@@ -1,22 +1,5 @@
 [install]
-# 使用 bun 的快速安装
-cache = true
-# 禁用自动安装 peer dependencies
-auto = false
-# 使用 bun 的锁文件
-lockfile = true
+registry = "https://registry.npmjs.org/"
 
-[install.scopes]
-# 配置作用域包
-
-[run]
-# 运行脚本配置
-bun = "bun"
-
-[test]
-# 测试配置
-preload = ["./test/setup.ts"]
-
-[install.lockfile]
-# 锁文件配置
-save = true
+[install.cache]
+disable = false
