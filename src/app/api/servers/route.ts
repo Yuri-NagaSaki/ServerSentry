@@ -36,6 +36,35 @@ interface RpcNode {
   updated_at?: string;
 }
 
+// 规范化虚拟化/类型展示
+function normalizeVirtualizationLabel(virtualization?: string, arch?: string): string {
+  const raw = (virtualization && virtualization.trim()) || (arch && arch.trim()) || '';
+  if (!raw) return '';
+  const lower = raw.toLowerCase();
+
+  // 将常见的“无/未知”同义归一为 Dedicated（物理机）
+  const noneSet = new Set(['none', 'null', 'unknown', 'n/a', 'na', '-', 'not applicable', 'n\u002fa']);
+  if (noneSet.has(lower)) return 'Dedicated';
+
+  // 常见虚拟化类型标准化展示
+  const map: Record<string, string> = {
+    'kvm': 'KVM',
+    'qemu': 'QEMU',
+    'openvz': 'OpenVZ',
+    'lxc': 'LXC',
+    'xen': 'Xen',
+    'vmware': 'VMware',
+    'hyper-v': 'Hyper-V',
+    'hyperv': 'Hyper-V',
+    'docker': 'Docker',
+    'baremetal': 'Dedicated',
+    'bare-metal': 'Dedicated',
+    'dedicated': 'Dedicated',
+  };
+
+  return map[lower] || raw;
+}
+
 // RPC2 节点状态类型（基于 common:getNodesLatestStatus 返回结构）
 interface RpcNodeStatus {
   client: string;
@@ -153,9 +182,8 @@ export async function GET() {
       const diskTotalMiB = Math.round((last?.disk_total ?? node.disk_total ?? 0) / (1024 * 1024));
       const diskUsedMiB = Math.round((last?.disk ?? 0) / (1024 * 1024));
 
-      // 规范化类型显示：若 virtualization 为字符串 "None"，则显示为 "Dedicated"
-      const rawType = (node.virtualization || node.arch || '').trim();
-      const normalizedType = rawType === 'None' ? 'Dedicated' : rawType;
+      // 规范化类型显示
+      const normalizedType = normalizeVirtualizationLabel(node.virtualization, node.arch);
 
       return {
         name: node.name || node.uuid,
