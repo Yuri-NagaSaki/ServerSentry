@@ -20,7 +20,7 @@ interface ServerCardProps {
 }
 
 export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerCard({ server }) {
-  const isOnline = server.online4 || server.online6;
+  const isOnline = server.online;
 
   // CPU 显示格式化，限制最多1位小数
   const cpuFormatter = React.useMemo(() => {
@@ -131,10 +131,10 @@ const ServerCardHeader: React.FC<ServerCardHeaderProps> = React.memo(function Se
       </div>
 
       {/* 运行时间和标签行 */}
-      <div className="flex items-center">
+      <div className="flex items-center justify-between">
         <UptimeDisplay uptime={server.uptime} />
 
-        <div className="flex items-center gap-0.5 ml-auto flex-shrink-0">
+        <div className="flex items-center gap-0.5 overflow-hidden">
           <IPStatusBadges
             ipv4Online={server.online4}
             ipv6Online={server.online6}
