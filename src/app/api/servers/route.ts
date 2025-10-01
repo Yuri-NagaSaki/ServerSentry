@@ -92,8 +92,7 @@ async function getNodeUptime(uuid: string): Promise<number | null> {
 
     const response = await fetch(url, {
       method: 'GET',
-      headers,
-      next: { revalidate: 1 }
+      headers
     });
 
     if (!response.ok) {
@@ -154,11 +153,16 @@ export async function GET() {
       const diskTotalMiB = Math.round((last?.disk_total ?? node.disk_total ?? 0) / (1024 * 1024));
       const diskUsedMiB = Math.round((last?.disk ?? 0) / (1024 * 1024));
 
+      // 规范化类型显示：若 virtualization 为字符串 "None"，则显示为 "Dedicated"
+      const rawType = (node.virtualization || node.arch || '').trim();
+      const normalizedType = rawType === 'None' ? 'Dedicated' : rawType;
+
       return {
         name: node.name || node.uuid,
         alias: node.group || '',
-        type: node.virtualization || node.arch || '',
+        type: normalizedType,
         location: node.region || node.group || '',
+        online: consideredOnline,
         online4: consideredOnline && hasIPv4,
         online6: consideredOnline && hasIPv6,
         uptime: uptimeMap.get(node.uuid) ? `${uptimeMap.get(node.uuid)}s` : '',
