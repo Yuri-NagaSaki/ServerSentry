@@ -4,7 +4,7 @@ import React from 'react';
 import { useServers } from '@/hooks/use-servers';
 import { ServerCard } from './server-card';
 
-import { Server } from '@/lib/api';
+import type { Server } from '@/types/server';
 
 export const ServerList: React.FC = React.memo(function ServerList() {
   const { data } = useServers();

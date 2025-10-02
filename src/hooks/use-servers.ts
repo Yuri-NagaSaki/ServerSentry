@@ -1,6 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getServersStatus, type StatsResponse } from '@/lib/api';
 import { config } from '@/lib/config';
+
+export interface StatsResponse {
+  updated: number;
+  servers: import('@/types/server').Server[];
+}
 
 /**
  * 获取服务器状态数据的Hook，优化性能以减少内存占用
@@ -8,20 +12,16 @@ import { config } from '@/lib/config';
 export const useServers = () => {
   return useQuery<StatsResponse>({
     queryKey: ['servers-status'],
-    queryFn: getServersStatus,
+    queryFn: async () => {
+      const res = await fetch(config.apiUrl, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        next: { revalidate: 1 },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
     refetchInterval: config.refreshInterval,
-    // 页面聚焦时不强制刷新（与原版一致）
     refetchOnWindowFocus: false,
-    select: (data) => {
-      // 只保留需要的字段，减少内存占用
-      return {
-        ...data,
-        servers: data.servers.map(server => ({
-          ...server,
-          // 移除任何不必要的大型数据字段
-          // 如果需要的话可以在这里精简数据
-        }))
-      };
-    }
   });
 };

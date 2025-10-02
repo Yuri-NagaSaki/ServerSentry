@@ -111,3 +111,43 @@ export const formatSpeed = (bytes: number, decimals = 1): string => {
 
   return `${formatter.format(value)} ${sizes[i]}`;
 };
+
+/**
+ * 创建 CPU 格式化函数，默认保留 0-1 位小数
+ */
+export function createCpuFormatter(locale: string = 'zh-CN', maximumFractionDigits: number = 1) {
+  const nf = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits,
+  });
+  return (val: number) => nf.format(val);
+}
+
+/**
+ * 将 KiB 数值格式化为带单位的字符串
+ */
+export const formatKiB = (kib: number, decimals = 1): string => {
+  return formatBytes(kib * 1024, decimals);
+};
+
+/**
+ * 将 MiB 数值格式化为带单位的字符串
+ */
+export const formatMiB = (mib: number, decimals = 1): string => {
+  return formatBytes(mib * 1024 * 1024, decimals);
+};
+
+/**
+ * 创建 SWAP 专用格式化函数
+ * - 当 totalKiB 为 0 时：valueKiB 为 0 显示 "未配置"，否则按 KiB 正常格式化
+ * - 当 totalKiB > 0 时：统一按 KiB 正常格式化
+ */
+export function createSwapFormatter(totalKiB: number) {
+  const hasSwap = totalKiB > 0;
+  return (valueKiB: number) => {
+    if (!hasSwap) {
+      return valueKiB === 0 ? '未配置' : formatKiB(valueKiB);
+    }
+    return formatKiB(valueKiB);
+  };
+}

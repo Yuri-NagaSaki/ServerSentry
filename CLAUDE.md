@@ -22,7 +22,7 @@ ServerSentry is a Next.js 15 + React 19 monitoring dashboard for ServerStatus-Ru
 - **TypeScript** for type safety
 - **Tailwind CSS** with custom font (HarmonyOS Sans SC) and native animations
 - **TanStack Query** for data fetching and caching
-- **Axios** for API requests
+- **native fetch** for API requests
 
 ### Project Structure
 
@@ -41,15 +41,18 @@ src/
 ### Key Configuration Files
 
 - `src/lib/config.ts` - Global app configuration including API URL, refresh interval, and site metadata
-- `src/lib/api.ts` - API client, type definitions, and data formatting utilities
-- `next.config.ts` - Next.js configuration with standalone output, API rewrites, and CORS headers
+- `src/lib/api.ts` - Frontend helpers (types, grouping utilities, fetch wrapper for local proxy)
+- `src/lib/rpc2.ts` - Komari RPC2 client and typed wrappers
+- `src/lib/response.ts` - Helper to standardize API route JSON responses and cache policy
+- `next.config.ts` - Next.js configuration with standalone output
 
 ### Data Flow
 
-1. **API Integration**: Connects to ServerStatus-Rust backend via `/json/stats.json` endpoint
-2. **Query Management**: Uses TanStack Query with optimized caching (30s stale time, 5min garbage collection)
-3. **Real-time Updates**: Auto-refreshes every 1 second (configurable via `config.refreshInterval`)
-4. **Type Safety**: Comprehensive TypeScript interfaces for Server and StatsResponse types
+1. **API Integration**: The UI calls local proxy routes (`/api/servers`, `/api/public`, `/api/version`).
+   - `/api/servers` aggregates Komari data primarily via RPC2 (`common:getNodes`, `common:getNodesLatestStatus`).
+   - For uptime seconds, it temporarily falls back to traditional REST (`/api/recent/{uuid}`) when needed.
+2. **Query Management**: Uses TanStack Query to poll `/api/servers` at `config.refreshInterval`.
+3. **Type Safety**: Strong typing for RPC2 payloads and UI consumption types.
 
 ### UI Design Philosophy
 
@@ -80,7 +83,8 @@ src/
 
 ## Environment Variables
 
-- `NEXT_PUBLIC_API_URL` - ServerStatus-Rust API URL (defaults to `http://localhost:8080`)
+- `KOMARI_BASE_URL` - Komari backend base URL
+- `KOMARI_API_KEY` - Optional Komari API key (Bearer), enables full data where required
 
 ## Deployment
 

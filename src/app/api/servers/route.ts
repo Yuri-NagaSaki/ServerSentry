@@ -1,5 +1,6 @@
 import { rpcGetNodes, rpcGetNodesLatestStatus } from '@/lib/rpc2';
 import { getKomariConfig } from '@/lib/rpc2';
+import { json, jsonError, CachePolicy } from '@/lib/response';
 
 // RPC2 节点信息类型（基于 common:getNodes 返回结构）
 interface RpcNode {
@@ -169,7 +170,6 @@ export async function GET() {
     const enriched = nodesArray.map((node) => {
       const last = latestMap?.[node.uuid] as RpcNodeStatus | undefined;
       const consideredOnline = Boolean(last?.online);
-      const updatedAt = last?.time ? Date.parse(last.time) : 0;
 
       // 判断 IP 地址存在性（不显示具体地址，只判断是否存在）
       const hasIPv4 = Boolean(node.ipv4 && node.ipv4.trim() !== '');
@@ -209,26 +209,7 @@ export async function GET() {
         swap_used: swapUsedKiB,
         hdd_total: diskTotalMiB,
         hdd_used: diskUsedMiB,
-        labels: node.tags || '',
         weight: node.weight ?? 0,
-        custom: '',
-        gid: node.group || '',
-        last_network_in: undefined,
-        last_network_out: undefined,
-        notify: undefined,
-        vnstat: undefined,
-        ping_10010: undefined,
-        ping_189: undefined,
-        ping_10086: undefined,
-        time_10010: undefined,
-        time_189: undefined,
-        time_10086: undefined,
-        tcp_count: last?.connections ?? 0,
-        udp_count: last?.connections_udp ?? 0,
-        process_count: last?.process ?? 0,
-        thread_count: undefined,
-        latest_ts: updatedAt || Date.now(),
-        si: undefined,
       };
     });
 
@@ -237,24 +218,9 @@ export async function GET() {
       servers: enriched,
     };
 
-    return Response.json(resp, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=1, stale-while-revalidate=2',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
+    return json(resp, { cacheControl: CachePolicy.PublicFast });
   } catch (error) {
     console.error('API proxy error:', error);
-    return Response.json(
-      { error: 'Failed to fetch server status' },
-      {
-        status: 500,
-        headers: {
-          'Cache-Control': 'no-cache',
-        }
-      }
-    );
+    return jsonError('Failed to fetch server status', 500, { cacheControl: CachePolicy.NoCache });
   }
 }

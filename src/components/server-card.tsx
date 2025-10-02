@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Server } from '@/lib/api';
-import { formatBytes } from '@/lib/utils';
+import type { Server } from '@/types/server';
 import { formatDurationEnShort } from '@/lib/utils';
+import { createCpuFormatter, createSwapFormatter, formatKiB, formatMiB } from '@/lib/utils';
 import { ServerMetric } from './server-metric';
 import { Clock, MapPin, Server as ServerIcon } from 'lucide-react';
 
@@ -23,30 +23,15 @@ interface ServerCardProps {
 export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerCard({ server }) {
   const isOnline = server.online4 || server.online6;
 
-  // CPU 显示格式化，限制最多1位小数
-  const cpuFormatter = React.useMemo(() => {
-    const nf = new Intl.NumberFormat('zh-CN', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 1,
-    });
-    return (val: number) => nf.format(val);
-  }, []);
+  // CPU 显示格式化，限制最多1位小数（移至 utils）
+  const cpuFormatter = React.useMemo(() => createCpuFormatter('zh-CN', 1), []);
 
-  // SWAP特殊处理 - 使用 useMemo 缓存
-  const swapConfig = React.useMemo(() => {
-    const hasSwap = server.swap_total > 0;
-    const formatter = (val: number) => {
-      if (!hasSwap) {
-        return val === 0 ? "未配置" : formatBytes(val * 1024);
-      }
-      return formatBytes(val * 1024);
-    };
-    return { hasSwap, formatter };
-  }, [server.swap_total]);
+  // SWAP特殊处理（移至 utils）
+  const swapFormatter = React.useMemo(() => createSwapFormatter(server.swap_total), [server.swap_total]);
 
-  // 缓存格式化函数
-  const memoryFormatter = React.useCallback((val: number) => formatBytes(val * 1024), []);
-  const diskFormatter = React.useCallback((val: number) => formatBytes(val * 1024 * 1024), []);
+  // 缓存格式化函数（移至 utils）
+  const memoryFormatter = React.useCallback((val: number) => formatKiB(val), []);
+  const diskFormatter = React.useCallback((val: number) => formatMiB(val), []);
 
   return (
     <div className="h-full server-card card-glass glass-hover rounded-xl overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] cursor-pointer">
@@ -84,7 +69,7 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
           label="SWAP"
           value={server.swap_used}
           total={server.swap_total || 1}
-          formatter={swapConfig.formatter}
+          formatter={swapFormatter}
         />
 
         {/* 网络面板 */}
@@ -103,8 +88,30 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
     </div>
   );
 }, (prevProps, nextProps) => {
-  // 自定义比较函数，只在服务器数据真正变化时重新渲染
-  return JSON.stringify(prevProps.server) === JSON.stringify(nextProps.server);
+  // 仅比较会影响 UI 的字段，避免昂贵的 JSON.stringify
+  const a = prevProps.server;
+  const b = nextProps.server;
+
+  return (
+    a.alias === b.alias &&
+    a.name === b.name &&
+    a.type === b.type &&
+    a.location === b.location &&
+    a.uptime === b.uptime &&
+    a.online4 === b.online4 &&
+    a.online6 === b.online6 &&
+    a.cpu === b.cpu &&
+    a.memory_total === b.memory_total &&
+    a.memory_used === b.memory_used &&
+    a.swap_total === b.swap_total &&
+    a.swap_used === b.swap_used &&
+    a.hdd_total === b.hdd_total &&
+    a.hdd_used === b.hdd_used &&
+    a.network_rx === b.network_rx &&
+    a.network_tx === b.network_tx &&
+    a.network_in === b.network_in &&
+    a.network_out === b.network_out
+  );
 });
 ServerCard.displayName = 'ServerCard';
 

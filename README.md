@@ -91,13 +91,13 @@ KOMARI_API_KEY=your-api-key-here
 
 ### 代理路由说明
 
-本主题内置了以下代理路由，均会转发至 `KOMARI_BASE_URL` 对应的 Komari 接口：
+本主题内置以下代理路由（转发至 `KOMARI_BASE_URL` 的 Komari 接口）：
 
-- **`/api/servers`**: 聚合 `/api/nodes` 与 `/api/recent/{uuid}` 数据
-- **`/api/public`**: 获取公开配置信息
-- **`/api/version`**: 获取版本信息
-- **`/api/rpc2`**: JSON-RPC2 代理接口
-- **`/api/rpc2/ws`**: WebSocket RPC2 连接信息
+- **`/api/servers`**：主要基于 RPC2 聚合（`common:getNodes` + `common:getNodesLatestStatus`）。为确保与部分主题字段兼容，暂时使用传统接口 `/api/recent/{uuid}` 仅获取 uptime 秒数（若未来 RPC2 提供等价字段可移除此回退）。
+- **`/api/public`**：获取公开配置信息（RPC2 `common:getPublicInfo`）。
+- **`/api/version`**：获取版本信息（RPC2 `common:getVersion`）。
+- **`/api/rpc2`**：JSON-RPC2 代理接口（POST 透传）。
+- **`/api/rpc2/ws`**：WebSocket RPC2 接入信息（返回可用的 ws 链接）。
 
 ### 环境变量说明
 
