@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getKomariConfig } from '@/lib/rpc2';
+import { getKomariConfig } from '@/lib/config';
 
 export async function POST(request: NextRequest) {
   try {

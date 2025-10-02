@@ -1,3 +1,4 @@
+import { getKomariConfig } from '@/lib/config';
 export interface JsonRpcRequest<TParams = unknown> {
   jsonrpc: '2.0';
   id: string | number;
@@ -193,16 +194,7 @@ export async function callRpc<T = unknown, TParams = unknown>(
 /**
  * 获取 Komari 基础配置
  */
-export function getKomariConfig() {
-  const baseUrl = process.env.KOMARI_BASE_URL;
-  const apiKey = process.env.KOMARI_API_KEY;
-
-  if (!baseUrl) {
-    throw new Error('KOMARI_BASE_URL not configured');
-  }
-
-  return { baseUrl, apiKey };
-}
+export { getKomariConfig } from '@/lib/config';
 
 // ===== RPC2 方法封装 =====
 // 已裁剪未使用的通用 RPC 方法（rpc.methods / rpc.help / rpc.ping）

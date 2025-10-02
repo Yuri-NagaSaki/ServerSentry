@@ -4,22 +4,51 @@
 
 export const config = {
   /**
-   * API地址 - 使用本地代理路由
+   * API 路径（本地代理）
    */
-  apiUrl: '/api/servers',
-  
+  api: {
+    servers: '/api/servers',
+    public: '/api/public',
+  },
+
   /**
-   * 数据刷新间隔（毫秒）- 降低刷新频率以减少CPU负载
+   * React Query/SWR 的查询键，避免魔法字符串
    */
-  refreshInterval: 2000,
-  
+  queryKeys: {
+    serversStatus: ['servers-status'] as const,
+    publicInfo: ['komari-public'] as const,
+  },
+
+  /**
+   * 刷新/缓存时间设置（毫秒）
+   */
+  refresh: {
+    serversMs: 2000,
+    publicStaleMs: 5_000,
+  },
+
   /**
    * 网站标题
    */
   siteTitle: '猫猫监控',
-  
+
   /**
    * 网站描述
    */
   siteDescription: '实时监控服务器CPU、内存、硬盘和流量使用情况',
-}; 
+};
+
+/**
+ * 统一导出：后端 Komari 服务的基础配置
+ * 仅在服务端（API 路由、server 代码）执行此函数
+ */
+export function getKomariConfig() {
+  const baseUrl = process.env.KOMARI_BASE_URL;
+  const apiKey = process.env.KOMARI_API_KEY;
+
+  if (!baseUrl) {
+    throw new Error('KOMARI_BASE_URL not configured');
+  }
+
+  return { baseUrl, apiKey } as { baseUrl: string; apiKey?: string };
+}

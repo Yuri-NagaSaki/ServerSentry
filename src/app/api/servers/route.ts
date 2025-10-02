@@ -1,5 +1,5 @@
 import { rpcGetNodes, rpcGetNodesLatestStatus } from '@/lib/rpc2';
-import { getKomariConfig } from '@/lib/rpc2';
+import { getKomariConfig } from '@/lib/config';
 import { json, jsonError, CachePolicy } from '@/lib/response';
 
 // RPC2 节点信息类型（基于 common:getNodes 返回结构）

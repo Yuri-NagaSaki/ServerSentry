@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { config } from '@/lib/config';
 
 interface PublicResponse {
   status: string;
@@ -13,13 +14,13 @@ interface PublicResponse {
 
 export const usePublic = () => {
   return useQuery<PublicResponse>({
-    queryKey: ['komari-public'],
+    queryKey: config.queryKeys.publicInfo,
     queryFn: async () => {
-      const res = await fetch('/api/public', { next: { revalidate: 5 } });
+      const res = await fetch(config.api.public, { next: { revalidate: 5 } });
       if (!res.ok) throw new Error('Failed to load public settings');
       return res.json();
     },
-    staleTime: 5_000,
+    staleTime: config.refresh.publicStaleMs,
     refetchOnWindowFocus: false,
   });
 };

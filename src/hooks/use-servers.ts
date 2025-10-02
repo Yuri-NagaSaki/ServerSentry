@@ -11,9 +11,9 @@ export interface StatsResponse {
  */
 export const useServers = () => {
   return useQuery<StatsResponse>({
-    queryKey: ['servers-status'],
+    queryKey: config.queryKeys.serversStatus,
     queryFn: async () => {
-      const res = await fetch(config.apiUrl, {
+      const res = await fetch(config.api.servers, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         next: { revalidate: 1 },
@@ -21,7 +21,7 @@ export const useServers = () => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     },
-    refetchInterval: config.refreshInterval,
+    refetchInterval: config.refresh.serversMs,
     refetchOnWindowFocus: false,
   });
 };
