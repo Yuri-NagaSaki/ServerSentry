@@ -30,7 +30,7 @@ export const config = {
   /**
    * 网站标题
    */
-  siteTitle: '猫猫监控',
+  siteTitle: 'Server Status',
 
   /**
    * 网站描述
