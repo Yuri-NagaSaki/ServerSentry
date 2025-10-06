@@ -17,18 +17,57 @@ const SunIcon = () => (
   </svg>
 );
 
+const MonitorIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+  </svg>
+);
+
 export const Navbar: React.FC = React.memo(function Navbar() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
-  
+  const [siteTitle, setSiteTitle] = React.useState<string>(config.siteTitle);
+
   React.useEffect(() => {
     setMounted(true);
+    // 客户端获取站点名，避免在无 QueryClient 的上下文使用 React Query
+    const controller = new AbortController();
+    fetch('/api/public', { signal: controller.signal })
+      .then(r => r.ok ? r.json() : null)
+      .then(json => {
+        const title = json?.data?.sitename;
+        if (typeof title === 'string' && title.trim()) {
+          setSiteTitle(title);
+        }
+      })
+      .catch(() => {})
+    return () => controller.abort();
   }, []);
-  
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+
+  const cycleTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark');
+    } else if (theme === 'dark') {
+      setTheme('system');
+    } else {
+      setTheme('light');
+    }
   };
-  
+
+  const getIcon = () => {
+    if (theme === 'system') {
+      return <MonitorIcon />;
+    }
+    return resolvedTheme === 'dark' ? <MoonIcon /> : <SunIcon />;
+  };
+
+  const getLabel = () => {
+    if (theme === 'system') {
+      return '跟随系统';
+    }
+    return resolvedTheme === 'dark' ? '深色模式' : '浅色模式';
+  };
+
   // 防止水合错误，在mounted之前不显示主题按钮
   if (!mounted) {
     return (
@@ -37,10 +76,10 @@ export const Navbar: React.FC = React.memo(function Navbar() {
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <div className="flex items-center space-x-2 font-bold">
               <span className="text-xl">
-                {config.siteTitle}
+                {siteTitle}
               </span>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <GitHubLink />
               <div className="h-9 w-9"></div>
@@ -50,33 +89,30 @@ export const Navbar: React.FC = React.memo(function Navbar() {
       </header>
     );
   }
-  
+
   return (
     <header className="sticky top-0 z-50 navbar-glass">
       <div className="flex h-14 items-center justify-center">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center space-x-2 font-bold" suppressHydrationWarning>
             <span className="text-xl" suppressHydrationWarning>
-              {config.siteTitle}
+              {siteTitle}
             </span>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <GitHubLink />
-            
+
             <button
               type="button"
-              aria-label={theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
+              aria-label={`当前主题: ${getLabel()}`}
               className="inline-flex h-9 w-9 items-center justify-center rounded-md glass-light transition-colors hover:bg-secondary/50"
-              onClick={toggleTheme}
+              onClick={cycleTheme}
+              title={`当前主题: ${getLabel()}`}
             >
-              {theme === 'dark' ? (
-                <SunIcon />
-              ) : (
-                <MoonIcon />
-              )}
+              {getIcon()}
               <span className="sr-only">
-                {theme === 'dark' ? "切换至浅色模式" : "切换至深色模式"}
+                切换主题 (当前: {getLabel()})
               </span>
             </button>
           </div>
@@ -107,4 +143,4 @@ const GitHubLink = React.memo(function GitHubLink() {
       <span className="sr-only">访问GitHub仓库</span>
     </a>
   );
-}); 
+});

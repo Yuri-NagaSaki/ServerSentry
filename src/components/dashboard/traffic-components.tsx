@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { formatBytes } from '@/lib/api';
+import { formatBytes } from '@/lib/utils';
 
 export interface TrafficArrowProps {
   direction?: 'up' | 'down';
@@ -26,9 +26,9 @@ export const TrafficDisplay: React.FC<TrafficDisplayProps> = ({ download, upload
         {formatBytes(download).split(' ').join('')}
       </span>
     </div>
-    
+
     <div className="h-5 w-[1px] mx-2 bg-border" />
-    
+
     <div className="flex items-center">
       <TrafficArrow direction="up" />
       <span className="text-base font-bold text-foreground">
@@ -36,4 +36,4 @@ export const TrafficDisplay: React.FC<TrafficDisplayProps> = ({ download, upload
       </span>
     </div>
   </div>
-); 
+);

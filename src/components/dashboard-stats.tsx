@@ -3,8 +3,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useServers } from '@/hooks/use-servers';
 import { Cpu, Server, Wifi, Activity } from 'lucide-react';
-import { formatDateTime } from '@/lib/utils';
-import { formatSpeed } from '@/lib/api';
+import { formatDateTime, formatSpeed } from '@/lib/utils';
 
 import {
   StatCard,
@@ -16,11 +15,11 @@ import {
 export const DashboardStats: React.FC = () => {
   const { data } = useServers();
   const [mounted, setMounted] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   const stats = useMemo(() => {
     if (!data?.servers) {
       return {
@@ -33,18 +32,18 @@ export const DashboardStats: React.FC = () => {
         totalUpload: 0,
       };
     }
-    
-    const onlineServers = data.servers.filter((server) => server.online4 || server.online6).length;
+
+    const onlineServers = data.servers.filter((server) => server.online).length;
     const totalServers = data.servers.length;
-    
+
     let totalCpu = 0;
     let totalNetworkRx = 0;
     let totalNetworkTx = 0;
     let totalDownload = 0;
     let totalUpload = 0;
-    
+
     data.servers.forEach((server) => {
-      if (server.online4 || server.online6) {
+      if (server.online) {
         totalCpu += server.cpu || 0;
         totalNetworkRx += server.network_rx || 0;
         totalNetworkTx += server.network_tx || 0;
@@ -52,9 +51,9 @@ export const DashboardStats: React.FC = () => {
         totalUpload += server.network_out || 0;
       }
     });
-    
+
     const avgCpuUsage = onlineServers ? Math.round(totalCpu / onlineServers) : 0;
-    
+
     return {
       totalServers,
       onlineServers,
@@ -65,12 +64,12 @@ export const DashboardStats: React.FC = () => {
       totalUpload,
     };
   }, [data?.servers]);
-  
+
   const lastUpdated = useMemo(() => {
     if (!data?.updated) return '未知';
     return formatDateTime(data.updated);
   }, [data?.updated]);
-  
+
   // 加载中状态
   if (!mounted) {
     return (
@@ -82,28 +81,28 @@ export const DashboardStats: React.FC = () => {
             <span suppressHydrationWarning>最后更新: 加载中...</span>
           </div>
         </div>
-        
+
         <div className="stats-grid">
           <StatsSkeletons />
         </div>
       </div>
     );
   }
-  
+
   // 已加载状态
   return (
     <div className="stats-container">
       <div className="flex justify-between items-center dashboard-title">
-        <h2 
-          className="text-3xl font-bold tracking-tight dashboard-main-title" 
+        <h2
+          className="text-3xl font-bold tracking-tight dashboard-main-title"
           suppressHydrationWarning
         >
           监控概览
         </h2>
-        
+
         <LastUpdated timestamp={lastUpdated} />
       </div>
-      
+
       <div className="stats-grid">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
@@ -146,7 +145,7 @@ export const DashboardStats: React.FC = () => {
           <StatCard
             title="总流量"
             value={
-              <TrafficDisplay 
+              <TrafficDisplay
                 download={stats.totalDownload}
                 upload={stats.totalUpload}
               />
@@ -157,4 +156,4 @@ export const DashboardStats: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};

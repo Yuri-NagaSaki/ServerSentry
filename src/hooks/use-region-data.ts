@@ -2,11 +2,12 @@
 
 import { useMemo } from 'react';
 import { useServers } from './use-servers';
-import { groupServersByRegion, getUniqueRegions, Server } from '@/lib/api';
+import { groupServersByRegion, getUniqueRegions } from '@/lib/api';
+import type { Server } from '@/types/server';
 
 export const useRegionData = (selectedRegion?: string | null) => {
   const { data, isLoading, error } = useServers();
-  
+
   const regionData = useMemo(() => {
     if (!data?.servers) {
       return {
@@ -19,14 +20,14 @@ export const useRegionData = (selectedRegion?: string | null) => {
         }
       };
     }
-    
+
     const regions = getUniqueRegions(data.servers);
     const regionGroups = groupServersByRegion(data.servers);
-    
+
     // 根据选中地区过滤服务器
     let filteredServers: Server[];
     let filteredRegionGroups = regionGroups;
-    
+
     if (selectedRegion) {
       filteredServers = data.servers.filter(
         server => (server.location || '未知地区') === selectedRegion
@@ -35,7 +36,7 @@ export const useRegionData = (selectedRegion?: string | null) => {
     } else {
       filteredServers = data.servers;
     }
-    
+
     return {
       regions,
       regionGroups: filteredRegionGroups,
@@ -47,7 +48,7 @@ export const useRegionData = (selectedRegion?: string | null) => {
       }
     };
   }, [data?.servers, selectedRegion]);
-  
+
   return {
     ...regionData,
     isLoading,

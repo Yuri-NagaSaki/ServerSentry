@@ -96,19 +96,19 @@
     transform: translateZ(0);
     backface-visibility: hidden;
   }
-  
+
   /* macOS 特定优化 */
   @media (pointer: fine) {
     html {
       scroll-snap-type: none;
     }
   }
-  
+
   * {
     @apply border-border outline-ring/50;
     box-sizing: border-box;
   }
-  
+
   body {
     @apply bg-background text-foreground;
     overscroll-behavior: none;
@@ -121,7 +121,7 @@
     overflow-x: hidden;
     min-height: 100vh;
   }
-  
+
   /* 丝滑滚动容器 */
   .smooth-scroll {
     scroll-behavior: smooth;
@@ -129,20 +129,20 @@
     will-change: transform;
     transform: translateZ(0);
   }
-  
+
   /* 内容容器优化 */
   .content-container {
     contain: layout;
     will-change: contents;
   }
-  
+
   /* 服务器卡片容器优化 */
   .server-grid {
     contain: layout;
     will-change: contents;
     transform: translateZ(0);
   }
-  
+
   .server-metric-progress {
     @apply relative h-2 w-full overflow-hidden rounded-full bg-secondary;
   }
@@ -162,53 +162,53 @@
   .server-metric-progress-bar.danger {
     background-color: #ef4444;
   }
-  
+
   /* 优化滚动性能 */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: rgba(155, 155, 155, 0.3);
     border-radius: 3px;
     transition: background 0.2s ease;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(155, 155, 155, 0.5);
   }
-  
+
   /* Firefox 滚动条 */
   * {
     scrollbar-width: thin;
     scrollbar-color: rgba(155, 155, 155, 0.3) transparent;
   }
-  
+
   /* GPU加速优化类 */
   .transform-gpu {
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     perspective: 1000px;
   }
-  
+
   /* 轻量级动画效果 */
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out;
   }
-  
+
   .animate-slide-up {
     animation: slideUp 0.2s ease-out;
   }
-  
+
   .animate-scale-in {
     animation: scaleIn 0.15s ease-out;
   }
-  
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -217,7 +217,7 @@
       opacity: 1;
     }
   }
-  
+
   @keyframes slideUp {
     from {
       opacity: 0;
@@ -228,7 +228,7 @@
       transform: translateY(0);
     }
   }
-  
+
   @keyframes scaleIn {
     from {
       opacity: 0;
@@ -239,28 +239,28 @@
       transform: scale(1);
     }
   }
-  
+
   /* CLS预防 - 固定尺寸和布局稳定性 */
   .stats-container {
     min-height: 140px;
     contain: layout style;
   }
-  
+
   .stats-grid {
     min-height: 100px;
   }
-  
+
   .server-card {
     min-height: 280px;
     contain: layout style;
   }
-  
+
   .dashboard-title {
     min-height: 48px;
     line-height: 1.2;
     contain: layout;
   }
-  
+
   /* LCP优化 - 立即显示标题 */
   .dashboard-main-title {
     font-family: ui-sans-serif, system-ui, -apple-system, sans-serif !important;
@@ -271,18 +271,18 @@
     margin: 0;
     will-change: auto;
   }
-  
+
   /* 字体加载后的平滑过渡 */
   .dashboard-main-title.font-loaded {
     font-family: 'HarmonyOS Sans SC', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
     transition: font-family 0.1s ease-out;
   }
-  
+
   .server-grid-container {
     min-height: 300px;
     contain: layout;
   }
-  
+
   .loading-placeholder {
     width: 100%;
     min-height: inherit;
@@ -292,7 +292,7 @@
     align-items: center;
     justify-content: center;
   }
-  
+
   /* 改进的骨架屏 */
   .skeleton {
     background: linear-gradient(90deg, var(--muted) 25%, transparent 50%, var(--muted) 75%);
@@ -300,7 +300,7 @@
     animation: shimmer 2s infinite ease-in-out;
     border-radius: inherit;
   }
-  
+
   @keyframes shimmer {
     0% {
       background-position: 200% 0;
@@ -309,7 +309,7 @@
       background-position: -200% 0;
     }
   }
-  
+
   /* 高性能毛玻璃效果类 */
   .glass-effect {
     backdrop-filter: blur(12px) saturate(180%);
@@ -320,12 +320,12 @@
     transform: translateZ(0);
     backface-visibility: hidden;
   }
-  
+
   .dark .glass-effect {
     background-color: rgba(0, 0, 0, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  
+
   /* 轻量级模糊效果 */
   .glass-light {
     backdrop-filter: blur(8px);
@@ -334,12 +334,12 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     will-change: auto;
   }
-  
+
   .dark .glass-light {
     background-color: rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
-  
+
   /* 重量级模糊效果 */
   .glass-heavy {
     backdrop-filter: blur(20px) saturate(200%);
@@ -349,19 +349,19 @@
     will-change: auto;
     transform: translateZ(0);
   }
-  
+
   .dark .glass-heavy {
     background-color: rgba(0, 0, 0, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.12);
   }
-  
+
   /* 卡片专用毛玻璃效果 */
   .card-glass {
     backdrop-filter: blur(16px) saturate(160%);
     -webkit-backdrop-filter: blur(16px) saturate(160%);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 
+    box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -369,16 +369,16 @@
     transform: translateZ(0);
     contain: layout style;
   }
-  
+
   .dark .card-glass {
     background: rgba(0, 0, 0, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
+    box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.3),
       0 2px 4px -1px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
-  
+
   /* 导航栏专用毛玻璃 */
   .navbar-glass {
     backdrop-filter: blur(10px) saturate(140%);
@@ -388,23 +388,23 @@
     will-change: auto;
     transform: translateZ(0);
   }
-  
+
   .dark .navbar-glass {
     background: rgba(0, 0, 0, 0.85);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-  
+
   /* 性能优化的hover效果 */
   .glass-hover {
     transition: backdrop-filter 0.2s ease, background-color 0.2s ease;
   }
-  
+
   .glass-hover:hover {
     backdrop-filter: blur(18px) saturate(180%);
     -webkit-backdrop-filter: blur(18px) saturate(180%);
     background-color: rgba(255, 255, 255, 0.12);
   }
-  
+
   .dark .glass-hover:hover {
     background-color: rgba(0, 0, 0, 0.18);
   }

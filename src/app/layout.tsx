@@ -3,6 +3,7 @@ import "./globals.css";
 import { config } from "@/lib/config";
 import { Providers } from "./providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { HeadTitle } from "@/components/head-title";
 
 export const metadata: Metadata = {
   title: config.siteTitle,
@@ -20,16 +21,16 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
         {/* API预连接优化 */}
-        <link rel="preconnect" href={config.apiUrl} />
+        <link rel="preconnect" href={config.api.servers} />
         {/* 字体预加载 */}
-        <link rel="preload" href="/fonts/HarmonyOS_Sans_SC_Medium.woff2" as="font" type="font/woff2" crossOrigin="" />
+        <link rel="preload" href="/fonts/HarmonyOS_Sans_SC_Medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         {/* 关键CSS内联 - 防止FOUC和CLS */}
         <style dangerouslySetInnerHTML={{
           __html: `
             *{box-sizing:border-box}
             body{margin:0;background:#ffffff;color:#0a0a0a;font-family:'HarmonyOS Sans SC',ui-sans-serif,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overscroll-behavior:none}
             html.dark body{background:#0a0a0a;color:#fafafa}
-            @font-face{font-family:'HarmonyOS Sans SC';src:url('/fonts/HarmonyOS_Sans_SC_Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+            /* 字体由 styles/fonts.css 提供（font-display: swap），避免阻塞首屏文本绘制 */
             .min-h-screen{min-height:100vh}
             .bg-background{background-color:var(--background)}
             .text-foreground{color:var(--foreground)}
@@ -50,6 +51,7 @@ export default function RootLayout({
         }} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
+        <HeadTitle />
         <Providers>{children}</Providers>
         <SpeedInsights />
       </body>
