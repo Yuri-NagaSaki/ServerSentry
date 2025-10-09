@@ -91,8 +91,30 @@ export const ServerCard: React.FC<ServerCardProps> = React.memo(function ServerC
     </div>
   );
 }, (prevProps, nextProps) => {
-  // 自定义比较函数，只在服务器数据真正变化时重新渲染
-  return JSON.stringify(prevProps.server) === JSON.stringify(nextProps.server);
+  // 自定义比较函数，只比较显示相关的关键字段
+  const prev = prevProps.server;
+  const next = nextProps.server;
+
+  return (
+    prev.name === next.name &&
+    prev.alias === next.alias &&
+    prev.online4 === next.online4 &&
+    prev.online6 === next.online6 &&
+    prev.uptime === next.uptime &&
+    prev.cpu === next.cpu &&
+    prev.memory_used === next.memory_used &&
+    prev.memory_total === next.memory_total &&
+    prev.swap_used === next.swap_used &&
+    prev.swap_total === next.swap_total &&
+    prev.hdd_used === next.hdd_used &&
+    prev.hdd_total === next.hdd_total &&
+    prev.network_rx === next.network_rx &&
+    prev.network_tx === next.network_tx &&
+    prev.network_in === next.network_in &&
+    prev.network_out === next.network_out &&
+    prev.type === next.type &&
+    prev.location === next.location
+  );
 });
 ServerCard.displayName = 'ServerCard';
 

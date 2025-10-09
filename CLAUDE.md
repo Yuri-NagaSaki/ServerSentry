@@ -19,10 +19,10 @@ ServerSentry is a Next.js 15 + React 19 monitoring dashboard for ServerStatus-Ru
 ### Core Technologies
 - **Next.js 15** with App Router and standalone output
 - **React 19** with Strict Mode enabled
-- **TypeScript** for type safety
-- **Tailwind CSS** with custom font (HarmonyOS Sans SC) and native animations
-- **TanStack Query** for data fetching and caching
-- **Axios** for API requests
+- **TypeScript** for type safety with ES2022 target
+- **Tailwind CSS v4** with custom font (HarmonyOS Sans SC) and native animations
+- **TanStack Query v5** for data fetching and caching
+- **Native Fetch API** for all HTTP requests (no axios dependency)
 
 ### Project Structure
 
@@ -46,10 +46,14 @@ src/
 
 ### Data Flow
 
-1. **API Integration**: Connects to ServerStatus-Rust backend via `/json/stats.json` endpoint
-2. **Query Management**: Uses TanStack Query with optimized caching (30s stale time, 5min garbage collection)
-3. **Real-time Updates**: Auto-refreshes every 1 second (configurable via `config.refreshInterval`)
-4. **Type Safety**: Comprehensive TypeScript interfaces for Server and StatsResponse types
+1. **API Proxy Architecture**: Frontend makes requests to `/api/servers` Next.js route, which proxies to ServerStatus-Rust backend (configured via `BACKEND_API_URL` environment variable)
+2. **Query Management**: Uses TanStack Query with optimized caching:
+   - Stale time: 60 seconds (reduces request frequency)
+   - Garbage collection: 2 minutes (reduces memory footprint)
+   - Auto-refetch: Every 2 seconds (configurable via `config.refreshInterval`)
+   - Disabled window focus refetching
+3. **Data Processing**: Server data is fetched via native Fetch API with Next.js revalidation (1s cache)
+4. **Type Safety**: Comprehensive TypeScript interfaces for Server and StatsResponse types in `src/lib/api.ts`
 
 ### UI Design Philosophy
 
@@ -60,11 +64,12 @@ src/
 
 ### Performance Optimizations
 
-- Query configuration optimized for reduced memory footprint
-- Disabled refetching on window focus
-- Data selection in useServers hook to minimize memory usage
-- Turbopack for faster development builds
-- CSS-only animations instead of JavaScript-based motion libraries
+- **Component Lazy Loading**: Large components (ServerList, RegionSelect, RegionGroupView) are lazy-loaded using React.lazy()
+- **Query Optimization**: TanStack Query configured with reduced memory footprint (60s stale time, 2min GC, disabled window focus refetch)
+- **Data Selection**: useServers hook uses select option to minimize data transformation overhead
+- **Turbopack**: Fast development builds with Turbopack
+- **CSS-Only Animations**: No JavaScript animation libraries - all transitions via Tailwind CSS classes
+- **Modern Browser Target**: Webpack configured to disable polyfills and target modern browsers (ES2022)
 - **macOS Scroll Optimization**: Specialized CSS classes for smooth scrolling on macOS
 - **GPU Acceleration**: Hardware acceleration for all interactive elements
 - **Layout Containment**: CSS containment to reduce reflow and repaint
@@ -73,34 +78,73 @@ src/
 
 ### Theme System
 
-- Supports light/dark mode toggle
+- Supports light/dark mode toggle via next-themes
 - Configurable background system with gradient animations
 - Custom theme selector component
 - CSS variables for consistent theming
+- Default theme: light, system theme detection disabled
+
+### Key Features
+
+- **Dashboard Stats**: Aggregated view of total/online servers, uptime, and traffic
+- **Region Filtering**: Filter servers by location (groups servers by `location` field)
+- **Region Grouping**: Displays servers grouped by region with collapsible sections
+- **Real-time Monitoring**: Auto-refreshing server metrics (CPU, memory, disk, network)
+- **Network Speed Display**: Live upload/download speeds with formatted units
+- **Status Indicators**: Visual IPv4/IPv6 connectivity status badges
+- **Loading States**: Skeleton screens and optimistic UI updates
 
 ## Environment Variables
 
-- `NEXT_PUBLIC_API_URL` - ServerStatus-Rust API URL (defaults to `http://localhost:8080`)
+- `BACKEND_API_URL` - ServerStatus-Rust backend API URL (used by Next.js API route `/api/servers`, **required** for production)
+- `NEXT_PUBLIC_API_URL` - Legacy variable, now unused (API proxy handles routing internally)
 
 ## Deployment
 
 The app is configured for standalone deployment with:
-- Static export capability (`bun run export`)
-- Unoptimized images for static hosting
-- API proxy configuration for CORS handling
-- Docker-friendly standalone output
+- **Standalone Output**: Next.js standalone mode for minimal Docker images
+- **Unoptimized Images**: Static image serving without Next.js Image optimization
+- **API Proxy**: Built-in Next.js API route handles backend communication and CORS
+- **Production Build**: Console logs removed in production builds
+- **Environment**: Requires `BACKEND_API_URL` to be set to ServerStatus-Rust backend endpoint
+
+### Deployment Options
+
+1. **Standalone Node.js**: Deploy `.next/standalone` directory with Node.js 18+
+2. **Nginx Reverse Proxy**: Proxy frontend on port 3000, ensure `BACKEND_API_URL` is set
+3. **Replace Built-in Theme**: Export and copy to ServerStatus-Rust `web/` directory (see README.md)
 
 ## Component Patterns
 
-- Use the established component structure in `components/` directories
-- Follow the existing TypeScript interface patterns in `src/lib/api.ts`
-- Utilize the custom hooks pattern for data fetching (`use-servers.ts`, `use-theme.ts`)
-- Implement hover effects and transitions using Tailwind CSS classes
-- Use `transition-*` classes for smooth interactions without JavaScript animations
-- Apply performance optimization classes for macOS compatibility:
-  - `gpu-accelerated` - For hardware acceleration
-  - `card-optimized` - For card components
-  - `grid-optimized` - For grid layouts
-  - `layout-optimized` - For containers
-  - `hover-optimized` - For interactive elements
-  - `macos-scroll-optimized` - For smooth scrolling on macOS
+- **Component Organization**:
+  - `components/dashboard/` - Dashboard-specific components
+  - `components/server/` - Server card and detail components
+  - `components/ui/` - Reusable UI primitives
+  - Export components via index.ts barrel files
+
+- **Lazy Loading**: Large components should use React.lazy() with Suspense fallbacks
+  ```tsx
+  const ServerList = lazy(() => import('@/components/server-list').then(m => ({ default: m.ServerList })));
+  ```
+
+- **Styling**:
+  - Use Tailwind CSS classes exclusively (no CSS-in-JS)
+  - Apply performance optimization classes for macOS:
+    - `gpu-accelerated` - Hardware acceleration
+    - `card-optimized` - Card components
+    - `grid-optimized` - Grid layouts
+    - `macos-scroll-optimized` - Smooth scrolling
+  - Use `transition-*` classes for hover effects
+
+- **Data Fetching**:
+  - Use custom hooks (`use-servers.ts`, `use-region-data.ts`)
+  - Follow TanStack Query patterns with select for data transformation
+  - TypeScript interfaces defined in `src/lib/api.ts`
+
+- **Formatting Utilities**: Available in `src/lib/api.ts`
+  - `formatBytes(bytes, decimals)` - Format storage/memory sizes
+  - `formatSpeed(bytes, decimals)` - Format network speeds
+  - `formatPercent(value, total)` - Calculate percentages
+  - `groupServersByRegion(servers)` - Group servers by location
+  - `getUniqueRegions(servers)` - Extract unique region list
+  - All use native `Intl.NumberFormat` for localization

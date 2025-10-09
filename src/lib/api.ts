@@ -82,24 +82,36 @@ export const getServersStatus = async (): Promise<StatsResponse> => {
 };
 
 /**
- * 格式化流量数据 - 使用原生Intl.NumberFormat
+ * 单例格式化器 - 缓存Intl.NumberFormat实例以提升性能
+ */
+const numberFormatterCache = new Map<number, Intl.NumberFormat>();
+
+const getNumberFormatter = (decimals: number): Intl.NumberFormat => {
+  if (!numberFormatterCache.has(decimals)) {
+    numberFormatterCache.set(decimals, new Intl.NumberFormat('zh-CN', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals
+    }));
+  }
+  return numberFormatterCache.get(decimals)!;
+};
+
+/**
+ * 格式化流量数据 - 使用缓存的Intl.NumberFormat
  * @param bytes 字节数
  * @param decimals 小数位数
  * @returns 格式化后的流量
  */
 export const formatBytes = (bytes: number, decimals = 1): string => {
   if (bytes === 0) return '0 B';
-  
+
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const value = bytes / Math.pow(k, i);
-  
-  const formatter = new Intl.NumberFormat('zh-CN', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals
-  });
-  
+
+  const formatter = getNumberFormatter(decimals);
+
   return `${formatter.format(value)} ${sizes[i]}`;
 };
 
@@ -115,24 +127,21 @@ export const formatPercent = (value: number, total: number): number => {
 };
 
 /**
- * 格式化网络速率数据 - 使用原生Intl.NumberFormat
+ * 格式化网络速率数据 - 使用缓存的Intl.NumberFormat
  * @param bytes 字节数
  * @param decimals 小数位数
  * @returns 格式化后的速率
  */
 export const formatSpeed = (bytes: number, decimals = 1): string => {
   if (bytes === 0) return '0 B/s';
-  
+
   const k = 1024;
   const sizes = ['B/s', 'K/s', 'M/s', 'G/s', 'T/s', 'P/s', 'E/s', 'Z/s', 'Y/s'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   const value = bytes / Math.pow(k, i);
-  
-  const formatter = new Intl.NumberFormat('zh-CN', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: decimals
-  });
-  
+
+  const formatter = getNumberFormatter(decimals);
+
   return `${formatter.format(value)} ${sizes[i]}`;
 };
 
