@@ -113,9 +113,5 @@ docker-compose restart  # 如果使用 Docker
 - `src/app/globals.css` - 全局样式
 - `src/components/` - UI 组件
 
-## 许可证
-
-MIT
-
 
 
