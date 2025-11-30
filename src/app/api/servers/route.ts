@@ -1,12 +1,17 @@
 export async function GET() {
   try {
-    // 从环境变量获取后端地址，代码中绝不出现真实地址
+    console.log('[API] Step 1: Reading environment variable');
     const backendUrl = process.env.BACKEND_API_URL;
-    
+
     if (!backendUrl) {
-      throw new Error('Backend API URL not configured');
+      console.error('[API] BACKEND_API_URL not set');
+      return Response.json(
+        { error: 'Backend API URL not configured', step: 'env_check' },
+        { status: 500, headers: { 'Cache-Control': 'no-cache' } }
+      );
     }
 
+    console.log('[API] Step 2: Fetching from backend');
     const response = await fetch(backendUrl, {
       headers: {
         'Cache-Control': 'no-cache',
@@ -18,12 +23,27 @@ export async function GET() {
       }
     });
 
+    console.log('[API] Step 3: Response received, status:', response.status);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error('[API] Backend error:', response.status, errorText.substring(0, 100));
+      return Response.json(
+        {
+          error: 'Backend returned error',
+          step: 'fetch',
+          status: response.status,
+          statusText: response.statusText,
+          preview: errorText.substring(0, 100)
+        },
+        { status: 500, headers: { 'Cache-Control': 'no-cache' } }
+      );
     }
 
+    console.log('[API] Step 4: Parsing JSON');
     const data = await response.json();
+    console.log('[API] Step 5: JSON parsed, servers:', data?.servers?.length);
 
+    console.log('[API] Step 6: Returning response');
     return Response.json(data, {
       headers: {
         'Cache-Control': 'public, s-maxage=1, stale-while-revalidate=2',
@@ -33,11 +53,18 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('API proxy error:', error);
-    
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('[API] Unexpected error:', errorMsg, errorStack);
+
     return Response.json(
-      { error: 'Failed to fetch server status' },
-      { 
+      {
+        error: 'Failed to fetch server status',
+        message: errorMsg,
+        stack: errorStack?.split('\n').slice(0, 3).join('\n'),
+        step: 'unknown'
+      },
+      {
         status: 500,
         headers: {
           'Cache-Control': 'no-cache',
