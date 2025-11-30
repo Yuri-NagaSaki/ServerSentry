@@ -12,8 +12,10 @@ export async function GET() {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache'
       },
-      // 使用标准 cache 选项而不是 next 特定选项
-      cache: 'no-store'
+      // 缓存策略
+      next: {
+        revalidate: 1 // 1秒缓存
+      }
     });
 
     if (!response.ok) {
