@@ -14,6 +14,8 @@ export async function GET() {
     console.log('[API] Step 2: Fetching from backend');
     const response = await fetch(backendUrl, {
       headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache'
       },
